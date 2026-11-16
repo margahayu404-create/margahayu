@@ -172,6 +172,16 @@
     #confirm-vote { background: #176b9b; font-size: 14px; font-weight: 800; }
     #confirm-vote:hover:not(:disabled) { background: #12577e; }
     #confirm-vote:disabled { background: #bdc3c6; opacity: 1; color: white; }
+    .confirmation-card { width: min(100%, 336px); margin: 16px auto 0; padding: 16px 14px; border-radius: 12px; background: #eef1f1; }
+    .confirmation-photo { min-height: 151px; display: flex; justify-content: center; }
+    .confirmation-photo .candidate-photo { width: 126px; height: 151px; border: 2px solid #e94d3c; border-radius: 9px; }
+    .confirmation-name { display: block; margin-top: 13px; font-size: 18px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; }
+    .confirmation-number { display: block; margin-top: 2px; font-size: 13px; }
+    .confirmation-actions .button { width: min(100%, 126px); min-height: 46px; padding: 0 12px; }
+    #retry-selection { color: white; background: #e94d3c; }
+    #retry-selection:hover { background: #c83d30; }
+    #submit-vote { background: #3289c6; }
+    #submit-vote:hover { background: #2775ac; }
     .results-section { text-align: left; }
     .results-section .ballot-header { text-align: center; }
     .results-section .ballot-actions { flex-wrap: wrap; }
@@ -302,6 +312,20 @@
           </div>
         </section>
 
+        <section class="ballot-section confirmation-section hidden" id="confirmation-section" aria-labelledby="confirmation-title">
+          <h2 id="confirmation-title">Konfirmasi Pilihan Anda</h2>
+          <p class="subheading">Apakah Anda yakin memilih kandidat ini?</p>
+          <div class="confirmation-card">
+            <div class="confirmation-photo" id="confirmation-photo"></div>
+            <strong class="confirmation-name" id="confirmation-name"></strong>
+            <span class="confirmation-number" id="confirmation-number"></span>
+          </div>
+          <div class="ballot-actions confirmation-actions">
+            <button class="button" id="retry-selection" type="button">ULANGI</button>
+            <button class="button" id="submit-vote" type="button">PILIH</button>
+          </div>
+        </section>
+
         <section class="ballot-section results-section hidden" id="results-section" aria-labelledby="results-title">
           <h2 class="voting-results-title" id="results-title">Suara berhasil dicatat</h2>
           <p class="voting-results-summary">Terima kasih telah mengikuti simulasi Pilkades Desa Margahayu.</p>
@@ -332,11 +356,15 @@
       var cameraCopy = document.getElementById("camera-copy");
       var scanStatus = document.getElementById("scan-status");
       var ballotSection = document.getElementById("ballot-section");
+      var confirmationSection = document.getElementById("confirmation-section");
       var resultsSection = document.getElementById("results-section");
       var votingScreen = document.getElementById("voting-screen");
       var layout = document.querySelector(".layout");
       var candidateGrid = document.getElementById("candidate-grid");
       var confirmButton = document.getElementById("confirm-vote");
+      var confirmationPhoto = document.getElementById("confirmation-photo");
+      var confirmationName = document.getElementById("confirmation-name");
+      var confirmationNumber = document.getElementById("confirmation-number");
       var selectedCandidate = "";
       var currentVoter = "";
       var stream = null;
@@ -423,6 +451,7 @@
         document.querySelector(".intro").classList.add("hidden");
         votingScreen.classList.remove("hidden");
         ballotSection.classList.remove("hidden");
+        confirmationSection.classList.add("hidden");
         resultsSection.classList.add("hidden");
         confirmButton.disabled = true;
         renderCandidates();
@@ -600,6 +629,7 @@
         layout.classList.remove("hidden");
         document.querySelector(".intro").classList.remove("hidden");
         ballotSection.classList.add("hidden");
+        confirmationSection.classList.add("hidden");
         resultsSection.classList.add("hidden");
         document.getElementById("voter-details").classList.add("hidden");
         document.getElementById("empty-voter").classList.remove("hidden");
@@ -613,16 +643,42 @@
       confirmButton.addEventListener("click", function () {
         if (!currentVoter || !selectedCandidate) return;
         var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
+        var selectedPhoto = candidateGrid.querySelector(".candidate.selected .candidate-photo");
+        if (!chosen || !selectedPhoto || state.voters.indexOf(currentVoter) !== -1) {
+          setStatus("Pemilih tidak dapat diproses. Silakan pindai kode pemilih kembali.", "error");
+          return;
+        }
+        confirmationPhoto.innerHTML = "";
+        var photo = selectedPhoto.cloneNode(true);
+        photo.style.setProperty("--candidate-color", chosen.color);
+        confirmationPhoto.appendChild(photo);
+        confirmationName.textContent = chosen.name;
+        confirmationNumber.textContent = "Calon Nomor Urut " + (candidates.indexOf(chosen) + 1);
+        ballotSection.classList.add("hidden");
+        confirmationSection.classList.remove("hidden");
+        confirmationSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+
+      document.getElementById("retry-selection").addEventListener("click", function () {
+        confirmationSection.classList.add("hidden");
+        ballotSection.classList.remove("hidden");
+        renderCandidates();
+        confirmButton.disabled = !selectedCandidate;
+        ballotSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+
+      document.getElementById("submit-vote").addEventListener("click", function () {
+        if (!currentVoter || !selectedCandidate) return;
+        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
         if (!chosen || state.voters.indexOf(currentVoter) !== -1) {
           setStatus("Pemilih tidak dapat diproses. Silakan pindai kode pemilih kembali.", "error");
           return;
         }
-        if (!window.confirm("Konfirmasi pilihan untuk " + chosen.name + "? Pilihan tidak dapat diubah setelah dikonfirmasi.")) return;
         state.voters.push(currentVoter);
         state.votes[selectedCandidate] += 1;
         var saved = saveState();
         updateTotals();
-        ballotSection.classList.add("hidden");
+        confirmationSection.classList.add("hidden");
         document.getElementById("voter-details").classList.add("hidden");
         document.getElementById("empty-voter").classList.remove("hidden");
         document.getElementById("empty-voter").textContent = "Suara berhasil dicatat dalam simulasi. Pindai pemilih berikutnya untuk melanjutkan.";
