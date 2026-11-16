@@ -112,6 +112,8 @@
     .manual-form { display: flex; gap: 9px; margin-top: 13px; }
     .manual-form input { min-width: 0; flex: 1; height: 45px; border: 1px solid #d9e2d9; border-radius: 11px; padding: 0 13px; outline: none; background: #fff; }
     .manual-form input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,164,84,.16); }
+    .qr-image-button { width: 100%; margin-top: 10px; }
+    .qr-image-help { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
     .demo-code { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; padding: 13px; background: #fbfcf8; }
     .demo-code summary { color: var(--green); cursor: pointer; font-size: 13px; font-weight: 700; }
     .demo-code-content { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
@@ -290,6 +292,9 @@
           <input id="manual-code" type="text" autocomplete="off" placeholder="Atau masukkan kode pemilih" aria-label="Kode pemilih">
           <button class="button secondary" type="submit">Gunakan kode</button>
         </form>
+        <button class="button secondary qr-image-button" id="scan-image-button" type="button">Pindai QR dari foto</button>
+        <input class="hidden" id="qr-image-input" type="file" accept="image/*">
+        <p class="qr-image-help">Pilih foto atau tangkapan layar QR dari galeri. Gambar diproses di perangkat ini.</p>
         <details class="demo-code">
           <summary>Tampilkan QR demo untuk uji pemindaian</summary>
           <div class="demo-code-content">
@@ -382,6 +387,7 @@
     <div class="footer">Simulasi edukasi — bukan sistem pemungutan suara resmi.</div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script>
     (function () {
       "use strict";
@@ -396,6 +402,7 @@
       var cameraTitle = document.getElementById("camera-title");
       var cameraCopy = document.getElementById("camera-copy");
       var scanStatus = document.getElementById("scan-status");
+      var qrImageInput = document.getElementById("qr-image-input");
       var ballotSection = document.getElementById("ballot-section");
       var confirmationSection = document.getElementById("confirmation-section");
       var resultsSection = document.getElementById("results-section");
@@ -413,6 +420,9 @@
       var detector = null;
       var successTimer = null;
       var scanning = false;
+      var scanCanvas = document.createElement("canvas");
+      var scanContext = scanCanvas.getContext("2d", { willReadFrequently: true });
+      var lastScanAt = 0;
       var stateWarning = "";
       var state = loadState();
 
@@ -589,23 +599,113 @@
         showVoter(value);
       }
 
+      function decodeQrImage(source, sourceWidth, sourceHeight, maxSize) {
+        if (typeof window.jsQR !== "function" || !scanContext || !sourceWidth || !sourceHeight) return null;
+        var scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight));
+        var width = Math.max(1, Math.round(sourceWidth * scale));
+        var height = Math.max(1, Math.round(sourceHeight * scale));
+        scanCanvas.width = width;
+        scanCanvas.height = height;
+        scanContext.drawImage(source, 0, 0, width, height);
+        var imageData = scanContext.getImageData(0, 0, width, height);
+        return window.jsQR(imageData.data, width, height, { inversionAttempts: "attemptBoth" });
+      }
+
+      function scanQrFromVideo() {
+        var result = decodeQrImage(video, video.videoWidth, video.videoHeight, 960);
+        if (!result || !result.data) return false;
+        acceptBarcode(result.data);
+        return true;
+      }
+
+      function scanQrFromFile(file) {
+        if (!file) return;
+        if (file.type && file.type.indexOf("image/") !== 0) {
+          setStatus("Pilih file gambar yang berisi QR.", "error");
+          qrImageInput.value = "";
+          return;
+        }
+        var image = new Image();
+        var imageUrl = URL.createObjectURL(file);
+        image.onload = async function () {
+          try {
+            if (detector) {
+              try {
+                var codes = await detector.detect(image);
+                for (var index = 0; index < codes.length; index += 1) {
+                  if (codes[index].rawValue) {
+                    showVoter(codes[index].rawValue);
+                    return;
+                  }
+                }
+              } catch (error) {
+                console.warn("Pemindai barcode bawaan gagal membaca gambar; mencoba pemindai QR alternatif.", error);
+              }
+            }
+            var result = decodeQrImage(image, image.naturalWidth, image.naturalHeight, 1600);
+            if (result && result.data) {
+              showVoter(result.data);
+              return;
+            }
+            setStatus("QR belum terbaca dari foto. Coba gambar yang lebih jelas atau masukkan kode secara manual.", "error");
+          } catch (error) {
+            console.error("Gambar QR gagal diproses.", error);
+            setStatus("Gambar QR gagal diproses. Coba foto lain atau masukkan kode secara manual.", "error");
+          } finally {
+            URL.revokeObjectURL(imageUrl);
+            qrImageInput.value = "";
+          }
+        };
+        image.onerror = function () {
+          URL.revokeObjectURL(imageUrl);
+          qrImageInput.value = "";
+          setStatus("Gambar tidak dapat dibuka. Pilih file gambar QR yang lain.", "error");
+        };
+        image.src = imageUrl;
+      }
+
       function scanFrame() {
-        if (!scanning || !detector || video.readyState < 2) {
+        if (!scanning) return;
+        if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+          window.requestAnimationFrame(scanFrame);
+          return;
+        }
+        var now = Date.now();
+        if (now - lastScanAt < 180) {
+          window.requestAnimationFrame(scanFrame);
+          return;
+        }
+        lastScanAt = now;
+        function tryQrFallback() {
+          try {
+            if (scanQrFromVideo()) return;
+          } catch (error) {
+            console.error("Pemindai QR alternatif gagal membaca bingkai kamera.", error);
+            stopCamera();
+            setCameraMessage("Pemindaian otomatis terhenti", "Pilih foto QR atau masukkan kode pemilih secara manual.");
+            setStatus("Terjadi masalah saat memindai QR. Pilih foto QR atau gunakan input manual.", "error");
+            return;
+          }
           if (scanning) window.requestAnimationFrame(scanFrame);
+        }
+        if (!detector) {
+          tryQrFallback();
           return;
         }
         detector.detect(video).then(function (codes) {
           if (!scanning) return;
-          if (codes.length && codes[0].rawValue) {
-            acceptBarcode(codes[0].rawValue);
-            return;
+          for (var index = 0; index < codes.length; index += 1) {
+            if (codes[index].rawValue) {
+              acceptBarcode(codes[index].rawValue);
+              return;
+            }
           }
-          window.requestAnimationFrame(scanFrame);
-        }).catch(function () {
+          tryQrFallback();
+        }).catch(function (error) {
           if (!scanning) return;
-          stopCamera();
-          setCameraMessage("Pemindaian otomatis terhenti", "Masukkan kode pemilih secara manual untuk melanjutkan.");
-          setStatus("Terjadi masalah saat memindai barcode. Kamera dihentikan; gunakan input kode manual.", "error");
+          console.warn("Pemindai barcode bawaan gagal; beralih ke pemindai QR alternatif.", error);
+          detector = null;
+          tryQrFallback();
         });
       }
 
@@ -620,28 +720,37 @@
         try {
           stream = await navigator.mediaDevices.getUserMedia({
             audio: false,
-            video: { facingMode: { ideal: "environment" } }
+            video: {
+              facingMode: { ideal: "environment" },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 }
+            }
           });
           video.srcObject = stream;
           await video.play();
           cameraFrame.classList.add("has-camera");
-          if (!("BarcodeDetector" in window)) {
-            setCameraMessage("Kamera aktif", "Pemindaian otomatis belum didukung browser ini. Masukkan kode pemilih secara manual.");
-            setStatus("Kamera aktif, tetapi pemindai barcode tidak didukung browser ini. Gunakan input kode manual.", "error");
+          detector = null;
+          if ("BarcodeDetector" in window) {
+            try {
+              var supported = await window.BarcodeDetector.getSupportedFormats();
+              var formats = ["qr_code", "code_128", "code_39", "ean_13", "ean_8", "upc_a", "upc_e", "codabar", "itf"];
+              formats = formats.filter(function (format) { return supported.indexOf(format) !== -1; });
+              if (formats.length) detector = new window.BarcodeDetector({ formats: formats });
+            } catch (error) {
+              console.warn("Pemindai barcode bawaan tidak tersedia; menggunakan pemindai QR alternatif.", error);
+            }
+          }
+          if (!detector && (typeof window.jsQR !== "function" || !scanContext)) {
+            stopCamera();
+            cameraFrame.classList.add("no-camera");
+            setCameraMessage("Pemindai otomatis tidak tersedia", "Pilih foto QR atau masukkan kode pemilih secara manual.");
+            setStatus("Pemindai QR alternatif belum termuat. Muat ulang halaman atau gunakan input kode manual.", "error");
             return;
           }
-          var supported = await window.BarcodeDetector.getSupportedFormats();
-          var formats = ["qr_code", "code_128", "code_39", "ean_13", "ean_8", "upc_a", "upc_e", "codabar", "itf"];
-          formats = formats.filter(function (format) { return supported.indexOf(format) !== -1; });
-          if (!formats.length) {
-            setCameraMessage("Format barcode tidak didukung", "Masukkan kode pemilih secara manual untuk melanjutkan.");
-            setStatus("Kamera aktif, tetapi tidak ada format barcode yang didukung oleh browser ini.", "error");
-            return;
-          }
-          detector = new window.BarcodeDetector({ formats: formats });
           scanning = true;
-          setCameraMessage("Kamera siap memindai", "Posisikan QR atau barcode di dalam bingkai.");
-          setStatus("Kamera aktif. Arahkan barcode pemilih ke dalam bingkai.");
+          lastScanAt = 0;
+          setCameraMessage("Kamera siap memindai", "Arahkan QR ke bingkai, tahan stabil, lalu dekatkan agar fokus.");
+          setStatus(detector ? "Kamera aktif. Arahkan QR atau barcode ke dalam bingkai." : "Kamera aktif dengan pemindai QR alternatif.");
           window.requestAnimationFrame(scanFrame);
         } catch (error) {
           stopCamera();
@@ -662,6 +771,14 @@
       document.getElementById("manual-form").addEventListener("submit", function (event) {
         event.preventDefault();
         showVoter(document.getElementById("manual-code").value);
+      });
+
+      document.getElementById("scan-image-button").addEventListener("click", function () {
+        qrImageInput.click();
+      });
+
+      qrImageInput.addEventListener("change", function (event) {
+        scanQrFromFile(event.target.files && event.target.files[0]);
       });
 
       document.getElementById("scan-again").addEventListener("click", function () {
