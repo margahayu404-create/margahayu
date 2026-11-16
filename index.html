@@ -187,9 +187,9 @@
       .voting-screen { min-height: min(630px, calc(100vh - 32px)); }
       .voting-screen-header strong { font-size: 11px; }
       .voting-content { width: min(100% - 24px, 500px); }
-      .candidate-grid { grid-template-columns: repeat(2, minmax(0, 190px)); gap: clamp(8px, 2.6vw, 16px); }
-      .candidate { width: 100%; min-height: 250px; padding: 15px 8px 10px; }
-      .candidate-photo { width: min(100%, 150px); height: clamp(120px, 38vw, 180px); }
+      .candidate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(8px, 2.6vw, 16px); }
+      .candidate { width: 100%; min-width: 0; min-height: 250px; padding: 15px 8px 10px; }
+      .candidate-photo { width: min(100%, 150px); min-width: 0; height: clamp(120px, 38vw, 180px); }
       body.voting-active main { padding: 16px 12px; }
       .camera-frame { aspect-ratio: 4 / 3; }
       .demo-badge { font-size: 10px; padding: 6px 8px; }
