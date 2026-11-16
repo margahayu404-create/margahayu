@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <title>Simulasi Pilkades Margahayu</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d3129;
+      --muted: #718078;
+      --green: #176b4a;
+      --green-dark: #10533a;
+      --mint: #e8f2ec;
+      --line: #e4e9e5;
+      --paper: #fff;
+      --background: #f5f7f4;
+      --amber: #a96816;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--ink);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(24px, calc((100vw - 1120px) / 2));
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 750; letter-spacing: -.025em; }
+    .brand-mark {
+      width: 38px; height: 38px; display: grid; place-items: center;
+      border-radius: 12px; color: white; background: var(--green);
+    }
+    .brand-mark svg { width: 21px; height: 21px; }
+    .brand small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 550; letter-spacing: .01em; }
+    .demo-badge { border: 1px solid #e8d8b8; color: #885816; background: #fffaf0; border-radius: 999px; padding: 7px 11px; font-size: 12px; font-weight: 700; }
+
+    main { width: min(100% - 40px, 1050px); margin: 0 auto; padding: 42px 0 64px; }
+    .intro { margin-bottom: 26px; }
+    .eyebrow { color: var(--green); text-transform: uppercase; letter-spacing: .13em; font-size: 11px; font-weight: 800; }
+    h1 { margin: 8px 0 8px; font-size: clamp(27px, 4vw, 36px); letter-spacing: -.045em; line-height: 1.15; }
+    .intro p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr); gap: 22px; align-items: start; }
+    .card { border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 8px 24px rgba(28,50,38,.035); }
+    .scanner-card { padding: 22px; }
+    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    h2 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+    .subheading { color: var(--muted); margin: 5px 0 0; font-size: 13px; line-height: 1.5; }
+    .step { flex: 0 0 auto; color: var(--green); background: var(--mint); border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 750; }
+
+    .camera-frame {
+      position: relative; display: grid; place-items: center; overflow: hidden;
+      width: 100%; aspect-ratio: 16 / 10; margin-top: 19px; border-radius: 13px;
+      background: #14251e; color: white;
+    }
+    #camera { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+    .camera-shade { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 22px; background: linear-gradient(180deg,rgba(8,20,14,.18),rgba(8,20,14,.58)); }
+    .scan-target { width: min(58%, 240px); aspect-ratio: 1; position: absolute; border: 2px solid rgba(255,255,255,.9); border-radius: 18px; box-shadow: 0 0 0 999px rgba(4,16,10,.12); }
+    .scan-target:before, .scan-target:after { content: ""; position: absolute; left: 10%; right: 10%; height: 2px; background: #9ff0bd; box-shadow: 0 0 13px #72ee9d; }
+    .scan-target:before { top: 20%; }
+    .scan-target:after { bottom: 20%; opacity: .6; }
+    .camera-message { position: relative; z-index: 1; max-width: 310px; margin-top: min(34vw, 220px); text-shadow: 0 1px 5px #000; }
+    .camera-message strong { display: block; font-size: 15px; }
+    .camera-message span { display: block; margin-top: 5px; font-size: 12px; opacity: .85; line-height: 1.45; }
+    .camera-frame.has-camera .camera-shade { background: linear-gradient(180deg,rgba(8,20,14,.08),rgba(8,20,14,.36)); }
+    .camera-frame.has-camera .camera-message { margin-top: min(34vw, 220px); }
+    .camera-frame.no-camera { background: #eef3ef; color: var(--ink); }
+    .camera-frame.no-camera .camera-shade { background: #eef3ef; }
+    .camera-frame.no-camera .scan-target { border-color: #9eb4a5; box-shadow: none; }
+    .camera-frame.no-camera .camera-message { margin-top: min(34vw, 220px); text-shadow: none; }
+    .camera-frame.no-camera .camera-message span { opacity: 1; color: var(--muted); }
+    .camera-frame.no-camera .scan-target:before, .camera-frame.no-camera .scan-target:after { background: var(--green); box-shadow: none; }
+
+    .scan-status { min-height: 20px; margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .scan-status.error { color: #a33e36; }
+    .scan-status.success { color: var(--green); }
+    .manual-form { display: flex; gap: 9px; margin-top: 13px; }
+    .manual-form input { min-width: 0; flex: 1; height: 43px; border: 1px solid #dce4de; border-radius: 10px; padding: 0 12px; outline: none; }
+    .manual-form input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,107,74,.1); }
+    .button { min-height: 42px; border: 0; border-radius: 10px; padding: 0 16px; background: var(--green); color: white; font-weight: 700; transition: background .15s, transform .15s; }
+    .button:hover { background: var(--green-dark); }
+    .button:active { transform: translateY(1px); }
+    .button:disabled { opacity: .45; cursor: not-allowed; }
+    .button.secondary { color: var(--green); border: 1px solid #d4e4d9; background: white; }
+    .button.secondary:hover { background: var(--mint); }
+    .scan-again { width: 100%; margin-top: 13px; }
+
+    .side-column { display: grid; gap: 16px; }
+    .voter-card, .info-card { padding: 19px; }
+    .voter-row { display: flex; align-items: center; gap: 12px; margin-top: 15px; }
+    .avatar { width: 42px; height: 42px; display: grid; place-items: center; color: var(--green); background: var(--mint); border-radius: 50%; font-size: 15px; font-weight: 800; }
+    .voter-name { font-weight: 750; font-size: 14px; }
+    .voter-id { color: var(--muted); margin-top: 3px; font-size: 12px; overflow-wrap: anywhere; }
+    .empty-voter { color: var(--muted); margin: 13px 0 1px; font-size: 13px; line-height: 1.55; }
+    .notice { display: flex; gap: 10px; align-items: flex-start; color: #6f562e; background: #fff9eb; border: 1px solid #f0e2c2; border-radius: 12px; padding: 13px; font-size: 12px; line-height: 1.5; }
+    .notice svg { width: 17px; flex: 0 0 17px; margin-top: 1px; }
+    .info-list { display: grid; gap: 12px; margin-top: 15px; }
+    .info-item { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
+    .info-item span:first-child { color: var(--muted); }
+    .info-item strong { text-align: right; }
+    .footer { margin-top: 24px; color: #89948d; text-align: center; font-size: 11px; }
+    .hidden { display: none !important; }
+
+    .ballot-section { margin-top: 0; }
+    .voting-screen {
+      width: min(800px, 100%);
+      min-height: 630px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid #e4e8e7;
+      border-radius: 17px;
+      background: white;
+      box-shadow: 0 16px 34px rgba(27, 40, 48, .18);
+    }
+    .voting-screen-header {
+      min-height: 59px;
+      display: grid;
+      place-content: center;
+      padding: 10px 18px;
+      color: white;
+      background: #2d4154;
+      text-align: center;
+    }
+    .voting-screen-header strong { font-size: 13px; letter-spacing: .01em; }
+    .voting-screen-header span { margin-top: 3px; font-size: 11px; }
+    .voting-content { width: min(100% - 32px, 460px); margin: 19px auto 28px; text-align: center; }
+    .voting-content h2 { font-size: 16px; letter-spacing: 0; }
+    .voting-content .subheading { margin-top: 3px; }
+    .candidate-grid { display: grid; grid-template-columns: repeat(2, 152px); justify-content: center; gap: 16px; margin-top: 17px; }
+    .candidate {
+      position: relative; width: 152px; min-height: 196px; display: flex; flex-direction: column;
+      align-items: center; padding: 13px 10px 10px; color: var(--ink); background: white;
+      border: 2px solid #eceeef; border-radius: 10px; transition: .15s;
+    }
+    .candidate:hover { border-color: #9eb4c6; transform: translateY(-1px); }
+    .candidate.selected { border-color: #176b9b; box-shadow: 0 0 0 2px rgba(23,107,155,.12); background: #f7fbff; }
+    .candidate-number { position: absolute; z-index: 1; top: 5px; left: 50%; display: grid; place-items: center; width: 34px; height: 34px; transform: translateY(-50%); border: 3px solid white; border-radius: 50%; background: #e94d3c; color: white; font-size: 16px; font-weight: 800; }
+    .candidate-photo { width: 102px; height: 126px; display: grid; place-items: center; overflow: hidden; border-radius: 8px; background: var(--candidate-color); }
+    .candidate-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; }
+    .candidate-photo svg { width: 82px; height: 108px; }
+    .candidate-name { display: block; margin-top: 10px; font-weight: 800; font-size: 11px; line-height: 1.35; }
+    .candidate-caption { display: none; }
+    .ballot-actions { display: flex; justify-content: center; gap: 9px; margin-top: 17px; }
+    .ballot-actions .button { width: min(100%, 336px); min-height: 48px; border-radius: 9px; }
+    #confirm-vote { background: #176b9b; font-size: 14px; font-weight: 800; }
+    #confirm-vote:hover:not(:disabled) { background: #12577e; }
+    #confirm-vote:disabled { background: #bdc3c6; opacity: 1; color: white; }
+    .results-section { text-align: left; }
+    .results-section .ballot-header { text-align: center; }
+    .results-section .ballot-actions { flex-wrap: wrap; }
+    .results-section .ballot-actions .button { width: auto; }
+    .voting-results-title { margin-bottom: 4px; text-align: center; }
+    .voting-results-summary { color: var(--muted); text-align: center; font-size: 13px; }
+    body.voting-active { background: #f4f7f6; }
+    body.voting-active .topbar, body.voting-active .intro, body.voting-active .layout, body.voting-active .footer { display: none; }
+    body.voting-active main { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 34px 20px; }
+    .result-row { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
+    .result-label { width: 84px; flex: 0 0 84px; font-size: 12px; font-weight: 650; }
+    .result-track { height: 9px; flex: 1; background: #edf1ed; border-radius: 999px; overflow: hidden; }
+    .result-bar { height: 100%; border-radius: inherit; background: var(--green); }
+    .result-count { width: 64px; text-align: right; color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 760px) {
+      .topbar { height: 64px; padding: 0 18px; }
+      main { width: min(100% - 28px, 560px); padding-top: 30px; }
+      .layout { grid-template-columns: 1fr; }
+      .scanner-card { padding: 17px; }
+      .voting-screen { min-height: min(630px, calc(100vh - 32px)); }
+      .voting-screen-header strong { font-size: 11px; }
+      .voting-content { width: min(100% - 24px, 460px); }
+      .candidate-grid { grid-template-columns: repeat(2, minmax(0, 152px)); gap: 10px; }
+      .candidate { width: 100%; }
+      body.voting-active main { padding: 16px 12px; }
+      .camera-frame { aspect-ratio: 4 / 3; }
+      .demo-badge { font-size: 10px; padding: 6px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9l8-5 8 5v11"/><path d="M8 20v-6h8v6M3 20h18"/></svg>
+      </div>
+      <div>Margahayu<small>Simulasi Pilkades</small></div>
+    </div>
+    <span class="demo-badge">MODE SIMULASI</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="eyebrow">Pemilihan kepala desa</div>
+      <h1>Selamat datang di TPS Margahayu</h1>
+      <p>Pindai kode pemilih untuk memulai simulasi pemungutan suara.</p>
+    </section>
+
+    <div class="layout">
+      <section class="card scanner-card" aria-labelledby="scan-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="scan-title">Pindai barcode pemilih</h2>
+            <p class="subheading">Arahkan QR atau barcode ke dalam bingkai kamera.</p>
+          </div>
+          <span class="step">LANGKAH 1</span>
+        </div>
+
+        <div class="camera-frame" id="camera-frame">
+          <video id="camera" autoplay muted playsinline aria-label="Pratinjau kamera untuk pemindaian barcode"></video>
+          <div class="camera-shade">
+            <div class="scan-target" aria-hidden="true"></div>
+            <div class="camera-message">
+              <strong id="camera-title">Menyiapkan kamera…</strong>
+              <span id="camera-copy">Izinkan akses kamera untuk mulai memindai.</span>
+            </div>
+          </div>
+        </div>
+        <p class="scan-status" id="scan-status" role="status" aria-live="polite">Meminta izin kamera…</p>
+
+        <form class="manual-form" id="manual-form">
+          <input id="manual-code" type="text" autocomplete="off" placeholder="Atau masukkan kode pemilih" aria-label="Kode pemilih">
+          <button class="button secondary" type="submit">Gunakan kode</button>
+        </form>
+        <button class="button secondary scan-again hidden" id="scan-again" type="button">Pindai pemilih berikutnya</button>
+
+      </section>
+
+      <aside class="side-column">
+        <section class="card voter-card" aria-live="polite">
+          <h2>Status pemilih</h2>
+          <div class="empty-voter" id="empty-voter">Belum ada pemilih yang dipindai. Kamera akan aktif saat halaman dibuka.</div>
+          <div class="voter-row hidden" id="voter-details">
+            <div class="avatar" aria-hidden="true">✓</div>
+            <div><div class="voter-name">Pemilih terverifikasi</div><div class="voter-id" id="voter-id"></div></div>
+          </div>
+        </section>
+        <section class="notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+          <span><strong>Ini hanya simulasi.</strong> Data pemilih dan hasil suara disimpan lokal di browser, bukan untuk pemilihan resmi.</span>
+        </section>
+        <section class="card info-card">
+          <h2>Informasi TPS</h2>
+          <div class="info-list">
+            <div class="info-item"><span>Wilayah</span><strong>Desa Margahayu</strong></div>
+            <div class="info-item"><span>Jenis kegiatan</span><strong>Simulasi Pilkades</strong></div>
+            <div class="info-item"><span>Total suara simulasi</span><strong id="sidebar-total">0</strong></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="voting-screen hidden" id="voting-screen" aria-label="Pemilihan calon kepala desa">
+      <header class="voting-screen-header">
+        <strong>PILKADES DESA MARGAHAYU (SIMULASI)</strong>
+        <span>Kecamatan Pagaden, Kabupaten Subang - Tahun 2026</span>
+      </header>
+      <div class="voting-content">
+        <section class="ballot-section hidden" id="ballot-section" aria-labelledby="ballot-title">
+          <h2 id="ballot-title">Silakan Pilih Calon Kepala Desa</h2>
+          <p class="subheading">Tekan pada kotak kandidat yang Anda pilih</p>
+          <div class="candidate-grid" id="candidate-grid"></div>
+          <div class="ballot-actions">
+            <button class="button" id="confirm-vote" type="button" disabled>PILIH KANDIDAT INI</button>
+          </div>
+        </section>
+
+        <section class="ballot-section results-section hidden" id="results-section" aria-labelledby="results-title">
+          <h2 class="voting-results-title" id="results-title">Suara berhasil dicatat</h2>
+          <p class="voting-results-summary">Terima kasih telah mengikuti simulasi Pilkades Desa Margahayu.</p>
+          <div id="results-list"></div>
+          <p class="subheading" id="total-votes" style="margin-top:14px"></p>
+          <div class="ballot-actions">
+            <button class="button secondary" id="reset-simulation" type="button">Reset simulasi</button>
+            <button class="button" id="continue-voting" type="button">Pemilih berikutnya</button>
+          </div>
+        </section>
+      </div>
+    </section>
+    <div class="footer">Simulasi edukasi — bukan sistem pemungutan suara resmi.</div>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var STORAGE_KEY = "margahayu-pilkades-simulation-v1";
+      var candidates = [
+        { id: "calon-1", name: "H.MA'IN PERMANA S.P.D", color: "#e00000", photo: "paslon-1.png" },
+        { id: "calon-2", name: "CALON 02", color: "#0875e1" }
+      ];
+      var video = document.getElementById("camera");
+      var cameraFrame = document.getElementById("camera-frame");
+      var cameraTitle = document.getElementById("camera-title");
+      var cameraCopy = document.getElementById("camera-copy");
+      var scanStatus = document.getElementById("scan-status");
+      var ballotSection = document.getElementById("ballot-section");
+      var resultsSection = document.getElementById("results-section");
+      var votingScreen = document.getElementById("voting-screen");
+      var layout = document.querySelector(".layout");
+      var candidateGrid = document.getElementById("candidate-grid");
+      var confirmButton = document.getElementById("confirm-vote");
+      var selectedCandidate = "";
+      var currentVoter = "";
+      var stream = null;
+      var detector = null;
+      var scanning = false;
+      var stateWarning = "";
+      var state = loadState();
+
+      function emptyState() {
+        return { voters: [], votes: { "calon-1": 0, "calon-2": 0 } };
+      }
+
+      function loadState() {
+        try {
+          var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (!saved || !Array.isArray(saved.voters) || !saved.votes) return emptyState();
+          candidates.forEach(function (candidate) {
+            if (!Number.isFinite(saved.votes[candidate.id]) || saved.votes[candidate.id] < 0) saved.votes[candidate.id] = 0;
+          });
+          return saved;
+        } catch (error) {
+          stateWarning = "Data simulasi tersimpan tidak dapat dibaca. Simulasi dimulai dengan data kosong.";
+          return emptyState();
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          return true;
+        } catch (error) {
+          setStatus("Penyimpanan lokal tidak tersedia. Hasil mungkin tidak tersimpan setelah halaman ditutup.", "error");
+          return false;
+        }
+      }
+
+      function setStatus(message, type) {
+        scanStatus.textContent = message;
+        scanStatus.className = "scan-status" + (type ? " " + type : "");
+      }
+
+      function setCameraMessage(title, copy) {
+        cameraTitle.textContent = title;
+        cameraCopy.textContent = copy;
+      }
+
+      function stopCamera() {
+        scanning = false;
+        if (stream) {
+          stream.getTracks().forEach(function (track) { track.stop(); });
+          stream = null;
+        }
+        video.srcObject = null;
+        cameraFrame.classList.remove("has-camera");
+      }
+
+      function updateTotals() {
+        var total = candidates.reduce(function (sum, candidate) { return sum + state.votes[candidate.id]; }, 0);
+        document.getElementById("sidebar-total").textContent = String(total);
+        return total;
+      }
+
+      function showVoter(code) {
+        var normalized = code.trim();
+        if (!normalized) {
+          setStatus("Kode pemilih tidak boleh kosong.", "error");
+          return;
+        }
+        if (state.voters.indexOf(normalized) !== -1) {
+          setStatus("Kode ini sudah digunakan dalam simulasi. Pindai kode pemilih lain.", "error");
+          return;
+        }
+        stopCamera();
+        currentVoter = normalized;
+        selectedCandidate = "";
+        document.getElementById("empty-voter").classList.add("hidden");
+        document.getElementById("voter-details").classList.remove("hidden");
+        document.getElementById("voter-id").textContent = "Kode: " + normalized;
+        document.getElementById("manual-code").value = "";
+        document.getElementById("manual-form").classList.add("hidden");
+        document.getElementById("scan-again").classList.remove("hidden");
+        document.body.classList.add("voting-active");
+        layout.classList.add("hidden");
+        document.querySelector(".intro").classList.add("hidden");
+        votingScreen.classList.remove("hidden");
+        ballotSection.classList.remove("hidden");
+        resultsSection.classList.add("hidden");
+        confirmButton.disabled = true;
+        renderCandidates();
+        setCameraMessage("Kode berhasil dipindai", "Silakan pilih satu calon untuk melanjutkan.");
+        cameraFrame.classList.add("no-camera");
+        setStatus("Kode pemilih diterima. Silakan pilih calon.", "success");
+        ballotSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function renderCandidates() {
+        candidateGrid.innerHTML = "";
+        candidates.forEach(function (candidate, index) {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.className = "candidate" + (selectedCandidate === candidate.id ? " selected" : "");
+          button.setAttribute("aria-pressed", selectedCandidate === candidate.id ? "true" : "false");
+          button.style.setProperty("--candidate-color", candidate.color);
+          var number = document.createElement("span");
+          number.className = "candidate-number";
+          number.textContent = String(index + 1);
+          var photo = document.createElement("span");
+          photo.className = "candidate-photo";
+          photo.setAttribute("aria-hidden", "true");
+          if (candidate.photo) {
+            var image = document.createElement("img");
+            image.src = candidate.photo;
+            image.alt = "Foto " + candidate.name;
+            photo.appendChild(image);
+          } else {
+            var portrait = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            portrait.setAttribute("viewBox", "0 0 80 110");
+            portrait.setAttribute("fill", "none");
+            portrait.setAttribute("aria-label", "Siluet tanpa wajah");
+            var body = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            body.setAttribute("d", "M8 110c2-25 13-38 32-38s30 13 32 38H8Z");
+            body.setAttribute("fill", "#26323a");
+            var head = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            head.setAttribute("cx", "40");
+            head.setAttribute("cy", "39");
+            head.setAttribute("r", "20");
+            head.setAttribute("fill", "#d9e0e4");
+            portrait.appendChild(body);
+            portrait.appendChild(head);
+            photo.appendChild(portrait);
+          }
+          var name = document.createElement("span");
+          name.className = "candidate-name";
+          name.textContent = candidate.name;
+          button.appendChild(number);
+          button.appendChild(photo);
+          button.appendChild(name);
+          button.addEventListener("click", function () {
+            selectedCandidate = candidate.id;
+            confirmButton.disabled = false;
+            renderCandidates();
+          });
+          candidateGrid.appendChild(button);
+        });
+      }
+
+      function renderResults() {
+        var total = updateTotals();
+        var list = document.getElementById("results-list");
+        list.innerHTML = "";
+        candidates.forEach(function (candidate, index) {
+          var count = state.votes[candidate.id];
+          var row = document.createElement("div");
+          row.className = "result-row";
+          var label = document.createElement("span");
+          label.className = "result-label";
+          label.textContent = String(index + 1).padStart(2, "0") + " · " + candidate.name;
+          var track = document.createElement("div");
+          track.className = "result-track";
+          var bar = document.createElement("div");
+          bar.className = "result-bar";
+          bar.style.width = (total ? Math.round(count / total * 100) : 0) + "%";
+          track.appendChild(bar);
+          var amount = document.createElement("span");
+          amount.className = "result-count";
+          amount.textContent = count + " suara";
+          row.appendChild(label);
+          row.appendChild(track);
+          row.appendChild(amount);
+          list.appendChild(row);
+        });
+        document.getElementById("total-votes").textContent = "Total suara masuk: " + total;
+        resultsSection.classList.remove("hidden");
+      }
+
+      function acceptBarcode(value) {
+        if (!scanning) return;
+        showVoter(value);
+      }
+
+      function scanFrame() {
+        if (!scanning || !detector || video.readyState < 2) {
+          if (scanning) window.requestAnimationFrame(scanFrame);
+          return;
+        }
+        detector.detect(video).then(function (codes) {
+          if (!scanning) return;
+          if (codes.length && codes[0].rawValue) {
+            acceptBarcode(codes[0].rawValue);
+            return;
+          }
+          window.requestAnimationFrame(scanFrame);
+        }).catch(function () {
+          if (!scanning) return;
+          stopCamera();
+          setCameraMessage("Pemindaian otomatis terhenti", "Masukkan kode pemilih secara manual untuk melanjutkan.");
+          setStatus("Terjadi masalah saat memindai barcode. Kamera dihentikan; gunakan input kode manual.", "error");
+        });
+      }
+
+      async function startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          cameraFrame.classList.add("no-camera");
+          setCameraMessage("Kamera tidak tersedia", "Buka halaman melalui localhost atau HTTPS, atau masukkan kode secara manual.");
+          setStatus("Browser ini tidak menyediakan akses kamera. Anda tetap bisa memasukkan kode pemilih secara manual.", "error");
+          return;
+        }
+
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: { facingMode: { ideal: "environment" } }
+          });
+          video.srcObject = stream;
+          await video.play();
+          cameraFrame.classList.add("has-camera");
+          if (!("BarcodeDetector" in window)) {
+            setCameraMessage("Kamera aktif", "Pemindaian otomatis belum didukung browser ini. Masukkan kode pemilih secara manual.");
+            setStatus("Kamera aktif, tetapi pemindai barcode tidak didukung browser ini. Gunakan input kode manual.", "error");
+            return;
+          }
+          var supported = await window.BarcodeDetector.getSupportedFormats();
+          var formats = ["qr_code", "code_128", "code_39", "ean_13", "ean_8", "upc_a", "upc_e", "codabar", "itf"];
+          formats = formats.filter(function (format) { return supported.indexOf(format) !== -1; });
+          if (!formats.length) {
+            setCameraMessage("Format barcode tidak didukung", "Masukkan kode pemilih secara manual untuk melanjutkan.");
+            setStatus("Kamera aktif, tetapi tidak ada format barcode yang didukung oleh browser ini.", "error");
+            return;
+          }
+          detector = new window.BarcodeDetector({ formats: formats });
+          scanning = true;
+          setCameraMessage("Kamera siap memindai", "Posisikan QR atau barcode di dalam bingkai.");
+          setStatus("Kamera aktif. Arahkan barcode pemilih ke dalam bingkai.");
+          window.requestAnimationFrame(scanFrame);
+        } catch (error) {
+          stopCamera();
+          cameraFrame.classList.add("no-camera");
+          if (error && (error.name === "NotAllowedError" || error.name === "PermissionDeniedError")) {
+            setCameraMessage("Izin kamera diperlukan", "Izinkan akses kamera di browser, lalu muat ulang halaman.");
+            setStatus("Akses kamera ditolak. Izinkan kamera di pengaturan browser dan muat ulang untuk memindai.", "error");
+          } else if (error && error.name === "NotFoundError") {
+            setCameraMessage("Kamera tidak ditemukan", "Masukkan kode pemilih secara manual untuk melanjutkan.");
+            setStatus("Tidak ada kamera yang tersedia pada perangkat ini. Gunakan input kode manual.", "error");
+          } else {
+            setCameraMessage("Kamera tidak dapat dibuka", "Pastikan halaman dibuka lewat localhost atau HTTPS dan izin kamera tersedia.");
+            setStatus("Kamera gagal dibuka. Periksa izin kamera dan koneksi aman (localhost/HTTPS), atau masukkan kode manual.", "error");
+          }
+        }
+      }
+
+      document.getElementById("manual-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        showVoter(document.getElementById("manual-code").value);
+      });
+
+      document.getElementById("scan-again").addEventListener("click", function () {
+        currentVoter = "";
+        selectedCandidate = "";
+        document.body.classList.remove("voting-active");
+        votingScreen.classList.add("hidden");
+        layout.classList.remove("hidden");
+        document.querySelector(".intro").classList.remove("hidden");
+        ballotSection.classList.add("hidden");
+        resultsSection.classList.add("hidden");
+        document.getElementById("voter-details").classList.add("hidden");
+        document.getElementById("empty-voter").classList.remove("hidden");
+        document.getElementById("manual-form").classList.remove("hidden");
+        document.getElementById("scan-again").classList.add("hidden");
+        cameraFrame.classList.remove("no-camera");
+        setCameraMessage("Menyiapkan kamera…", "Izinkan akses kamera untuk mulai memindai.");
+        startCamera();
+      });
+
+      confirmButton.addEventListener("click", function () {
+        if (!currentVoter || !selectedCandidate) return;
+        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
+        if (!chosen || state.voters.indexOf(currentVoter) !== -1) {
+          setStatus("Pemilih tidak dapat diproses. Silakan pindai kode pemilih kembali.", "error");
+          return;
+        }
+        if (!window.confirm("Konfirmasi pilihan untuk " + chosen.name + "? Pilihan tidak dapat diubah setelah dikonfirmasi.")) return;
+        state.voters.push(currentVoter);
+        state.votes[selectedCandidate] += 1;
+        var saved = saveState();
+        updateTotals();
+        ballotSection.classList.add("hidden");
+        document.getElementById("voter-details").classList.add("hidden");
+        document.getElementById("empty-voter").classList.remove("hidden");
+        document.getElementById("empty-voter").textContent = "Suara berhasil dicatat dalam simulasi. Pindai pemilih berikutnya untuk melanjutkan.";
+        document.getElementById("scan-again").classList.remove("hidden");
+        document.getElementById("manual-form").classList.add("hidden");
+        renderResults();
+        if (saved) setStatus("Pilihan berhasil dicatat. Terima kasih telah mengikuti simulasi.", "success");
+      });
+
+      document.getElementById("continue-voting").addEventListener("click", function () {
+        resultsSection.classList.add("hidden");
+        document.getElementById("scan-again").click();
+      });
+
+      document.getElementById("reset-simulation").addEventListener("click", function () {
+        if (!window.confirm("Hapus semua pemilih dan hasil simulasi dari browser ini?")) return;
+        state = emptyState();
+        var saved = saveState();
+        updateTotals();
+        resultsSection.classList.add("hidden");
+        document.getElementById("empty-voter").textContent = "Belum ada pemilih yang dipindai. Kamera akan aktif saat halaman dibuka.";
+        if (saved) setStatus("Data simulasi telah direset.", "success");
+      });
+
+      updateTotals();
+      if (stateWarning) setStatus(stateWarning, "error");
+      startCamera();
+    }());
+  </script>
+</body>
+</html>
