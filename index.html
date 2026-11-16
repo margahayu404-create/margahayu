@@ -96,6 +96,14 @@
     .manual-form { display: flex; gap: 9px; margin-top: 13px; }
     .manual-form input { min-width: 0; flex: 1; height: 43px; border: 1px solid #dce4de; border-radius: 10px; padding: 0 12px; outline: none; }
     .manual-form input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,107,74,.1); }
+    .demo-code { margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .demo-code summary { color: var(--green); cursor: pointer; font-size: 13px; font-weight: 700; }
+    .demo-code-content { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+    .demo-code-content img { width: 112px; height: 112px; flex: 0 0 112px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .demo-code-info { min-width: 0; font-size: 12px; line-height: 1.5; }
+    .demo-code-info strong { display: block; overflow-wrap: anywhere; }
+    .demo-code-info p { margin: 4px 0 6px; color: var(--muted); }
+    .demo-code-info a { color: var(--green); font-weight: 700; }
     .button { min-height: 42px; border: 0; border-radius: 10px; padding: 0 16px; background: var(--green); color: white; font-weight: 700; transition: background .15s, transform .15s; }
     .button:hover { background: var(--green-dark); }
     .button:active { transform: translateY(1px); }
@@ -240,6 +248,17 @@
           <input id="manual-code" type="text" autocomplete="off" placeholder="Atau masukkan kode pemilih" aria-label="Kode pemilih">
           <button class="button secondary" type="submit">Gunakan kode</button>
         </form>
+        <details class="demo-code">
+          <summary>Tampilkan QR demo untuk uji pemindaian</summary>
+          <div class="demo-code-content">
+            <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-001" width="320" height="320">
+            <div class="demo-code-info">
+              <strong>Kode demo: DEMO-MARGAHAYU-001</strong>
+              <p>Pindai QR dari layar lain atau cetak untuk mencoba kamera. Bisa juga masukkan kode di atas.</p>
+              <a href="kode-pemilih-demo.png" download="kode-pemilih-demo.png">Unduh gambar QR</a>
+            </div>
+          </div>
+        </details>
         <button class="button secondary scan-again hidden" id="scan-again" type="button">Pindai pemilih berikutnya</button>
 
       </section>
