@@ -130,6 +130,7 @@
 
     .ballot-section { margin-top: 0; }
     .voting-screen {
+      position: relative;
       width: min(800px, 100%);
       min-height: 630px;
       margin: 0 auto;
@@ -139,6 +140,13 @@
       background: white;
       box-shadow: 0 16px 34px rgba(27, 40, 48, .18);
     }
+    .success-overlay { position: absolute; z-index: 2; inset: 59px 0 0; display: grid; place-items: center; padding: 24px; background: rgba(0,0,0,.4); }
+    .success-overlay.hidden { display: none; }
+    .success-card { width: min(318px, 100%); padding: 46px 24px 32px; border-radius: 16px; background: #fff; box-shadow: 0 12px 28px rgba(0,0,0,.2); text-align: center; }
+    .success-icon { width: 66px; height: 66px; display: grid; place-items: center; margin: 0 auto 18px; border-radius: 11px; background: #4bd08b; box-shadow: inset 0 0 0 3px rgba(0,0,0,.12); }
+    .success-icon svg { width: 42px; height: 42px; stroke: white; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; }
+    .success-card h2 { margin: 0 0 8px; font-size: 20px; letter-spacing: 0; }
+    .success-card p { margin: 0; color: #34495c; font-size: 14px; font-weight: 650; line-height: 1.5; }
     .voting-screen-header {
       min-height: 59px;
       display: grid;
@@ -302,6 +310,15 @@
         <strong>PILKADES DESA MARGAHAYU (SIMULASI)</strong>
         <span>Kecamatan Pagaden, Kabupaten Subang - Tahun 2026</span>
       </header>
+      <div class="success-overlay hidden" id="success-overlay" role="status" aria-live="polite">
+        <div class="success-card">
+          <div class="success-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4L19 6"/></svg>
+          </div>
+          <h2>Terima Kasih!</h2>
+          <p>Suara Anda telah berhasil direkam.</p>
+        </div>
+      </div>
       <div class="voting-content">
         <section class="ballot-section hidden" id="ballot-section" aria-labelledby="ballot-title">
           <h2 id="ballot-title">Silakan Pilih Calon Kepala Desa</h2>
@@ -365,10 +382,12 @@
       var confirmationPhoto = document.getElementById("confirmation-photo");
       var confirmationName = document.getElementById("confirmation-name");
       var confirmationNumber = document.getElementById("confirmation-number");
+      var successOverlay = document.getElementById("success-overlay");
       var selectedCandidate = "";
       var currentVoter = "";
       var stream = null;
       var detector = null;
+      var successTimer = null;
       var scanning = false;
       var stateWarning = "";
       var state = loadState();
@@ -622,6 +641,11 @@
       });
 
       document.getElementById("scan-again").addEventListener("click", function () {
+        if (successTimer) {
+          window.clearTimeout(successTimer);
+          successTimer = null;
+        }
+        successOverlay.classList.add("hidden");
         currentVoter = "";
         selectedCandidate = "";
         document.body.classList.remove("voting-active");
@@ -685,6 +709,12 @@
         document.getElementById("scan-again").classList.remove("hidden");
         document.getElementById("manual-form").classList.add("hidden");
         renderResults();
+        successOverlay.classList.remove("hidden");
+        if (successTimer) window.clearTimeout(successTimer);
+        successTimer = window.setTimeout(function () {
+          successOverlay.classList.add("hidden");
+          successTimer = null;
+        }, 3000);
         if (saved) setStatus("Pilihan berhasil dicatat. Terima kasih telah mengikuti simulasi.", "success");
       });
 
