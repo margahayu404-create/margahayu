@@ -142,22 +142,22 @@
     }
     .voting-screen-header strong { font-size: 13px; letter-spacing: .01em; }
     .voting-screen-header span { margin-top: 3px; font-size: 11px; }
-    .voting-content { width: min(100% - 32px, 460px); margin: 19px auto 28px; text-align: center; }
+    .voting-content { width: min(100% - 32px, 500px); margin: 19px auto 28px; text-align: center; }
     .voting-content h2 { font-size: 16px; letter-spacing: 0; }
     .voting-content .subheading { margin-top: 3px; }
-    .candidate-grid { display: grid; grid-template-columns: repeat(2, 152px); justify-content: center; gap: 16px; margin-top: 17px; }
+    .candidate-grid { display: grid; grid-template-columns: repeat(2, 190px); justify-content: center; gap: 20px; margin-top: 20px; }
     .candidate {
-      position: relative; width: 152px; min-height: 196px; display: flex; flex-direction: column;
-      align-items: center; padding: 13px 10px 10px; color: var(--ink); background: white;
+      position: relative; width: 190px; min-height: 282px; display: flex; flex-direction: column;
+      align-items: center; padding: 15px 10px 12px; color: var(--ink); background: white;
       border: 2px solid #eceeef; border-radius: 10px; transition: .15s;
     }
     .candidate:hover { border-color: #9eb4c6; transform: translateY(-1px); }
     .candidate.selected { border-color: #176b9b; box-shadow: 0 0 0 2px rgba(23,107,155,.12); background: #f7fbff; }
-    .candidate-number { position: absolute; z-index: 1; top: 5px; left: 50%; display: grid; place-items: center; width: 34px; height: 34px; transform: translateY(-50%); border: 3px solid white; border-radius: 50%; background: #e94d3c; color: white; font-size: 16px; font-weight: 800; }
-    .candidate-photo { width: 102px; height: 126px; display: grid; place-items: center; overflow: hidden; border-radius: 8px; background: var(--candidate-color); }
+    .candidate-number { position: absolute; z-index: 1; top: 5px; left: 50%; display: grid; place-items: center; width: 38px; height: 38px; transform: translateY(-50%); border: 3px solid white; border-radius: 50%; background: #e94d3c; color: white; font-size: 17px; font-weight: 800; }
+    .candidate-photo { width: 150px; height: 180px; display: grid; place-items: center; overflow: hidden; border-radius: 8px; background: var(--candidate-color); }
     .candidate-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; }
-    .candidate-photo svg { width: 82px; height: 108px; }
-    .candidate-name { display: block; margin-top: 10px; font-weight: 800; font-size: 11px; line-height: 1.35; }
+    .candidate-photo svg { width: min(100%, 110px); height: min(100%, 150px); }
+    .candidate-name { display: block; margin-top: 11px; font-weight: 800; font-size: 12px; line-height: 1.35; }
     .candidate-caption { display: none; }
     .ballot-actions { display: flex; justify-content: center; gap: 9px; margin-top: 17px; }
     .ballot-actions .button { width: min(100%, 336px); min-height: 48px; border-radius: 9px; }
@@ -186,9 +186,10 @@
       .scanner-card { padding: 17px; }
       .voting-screen { min-height: min(630px, calc(100vh - 32px)); }
       .voting-screen-header strong { font-size: 11px; }
-      .voting-content { width: min(100% - 24px, 460px); }
-      .candidate-grid { grid-template-columns: repeat(2, minmax(0, 152px)); gap: 10px; }
-      .candidate { width: 100%; }
+      .voting-content { width: min(100% - 24px, 500px); }
+      .candidate-grid { grid-template-columns: repeat(2, minmax(0, 190px)); gap: clamp(8px, 2.6vw, 16px); }
+      .candidate { width: 100%; min-height: 250px; padding: 15px 8px 10px; }
+      .candidate-photo { width: min(100%, 150px); height: clamp(120px, 38vw, 180px); }
       body.voting-active main { padding: 16px 12px; }
       .camera-frame { aspect-ratio: 4 / 3; }
       .demo-badge { font-size: 10px; padding: 6px 8px; }
