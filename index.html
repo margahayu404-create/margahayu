@@ -281,12 +281,12 @@
           <div class="camera-shade">
             <div class="scan-target" aria-hidden="true"></div>
             <div class="camera-message">
-              <strong id="camera-title">Menyiapkan kameraâ€¦</strong>
+              <strong id="camera-title">Menyiapkan kamera...</strong>
               <span id="camera-copy">Izinkan akses kamera untuk mulai memindai.</span>
             </div>
           </div>
         </div>
-        <p class="scan-status" id="scan-status" role="status" aria-live="polite">Meminta izin kameraâ€¦</p>
+        <p class="scan-status" id="scan-status" role="status" aria-live="polite">Meminta izin kamera...</p>
 
         <form class="manual-form" id="manual-form">
           <input id="manual-code" type="text" autocomplete="off" placeholder="Atau masukkan kode pemilih" aria-label="Kode pemilih">
@@ -296,7 +296,7 @@
         <input class="hidden" id="qr-image-input" type="file" accept="image/*">
         <p class="qr-image-help">Pilih foto atau tangkapan layar QR dari galeri. Gambar diproses di perangkat ini.</p>
         <details class="demo-code" open>
-          <summary>QR demo â€” dapat digunakan berulang kali</summary>
+          <summary>QR demo - dapat digunakan berulang kali</summary>
           <div class="demo-code-content">
             <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-001" width="320" height="320">
             <div class="demo-code-info">
@@ -315,7 +315,7 @@
           <h2>Status pemilih</h2>
           <div class="empty-voter" id="empty-voter">Belum ada pemilih yang dipindai. Kamera akan aktif saat halaman dibuka.</div>
           <div class="voter-row hidden" id="voter-details">
-            <div class="avatar" aria-hidden="true">âœ“</div>
+            <div class="avatar" aria-hidden="true">OK</div>
             <div><div class="voter-name">Pemilih terverifikasi</div><div class="voter-id" id="voter-id"></div></div>
           </div>
         </section>
@@ -384,7 +384,7 @@
         </section>
       </div>
     </section>
-    <div class="footer">Simulasi edukasi â€” bukan sistem pemungutan suara resmi.</div>
+    <div class="footer">Simulasi edukasi - bukan sistem pemungutan suara resmi.</div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
@@ -797,7 +797,7 @@
         document.getElementById("manual-form").classList.remove("hidden");
         document.getElementById("scan-again").classList.add("hidden");
         cameraFrame.classList.remove("no-camera");
-        setCameraMessage("Menyiapkan kameraâ€¦", "Izinkan akses kamera untuk mulai memindai.");
+        setCameraMessage("Menyiapkan kamera...", "Izinkan akses kamera untuk mulai memindai.");
         startCamera();
       });
 
