@@ -60,15 +60,15 @@
       z-index: 100;
     }
 
-    .brand { display: flex; align-items: center; gap: 14px; color: white; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+    .brand { display: flex; align-items: center; gap: 14px; color: white; font-weight: 700; font-size: clamp(16px, 2vw, 18px); letter-spacing: -0.02em; }
     .brand-mark {
-      width: 42px; height: 42px; display: grid; place-items: center;
+      width: clamp(36px, 4vw, 42px); height: clamp(36px, 4vw, 42px); display: grid; place-items: center;
       border: none; border-radius: 12px; color: white;
       background: linear-gradient(135deg, #fcd34d, #d97706);
       box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
     }
     .brand-mark svg { width: 22px; height: 22px; stroke-width: 2.5; }
-    .brand small { display: block; margin-top: 2px; color: #cbd5e1; font-size: 12px; font-weight: 500; letter-spacing: 0; }
+    .brand small { display: block; margin-top: 2px; color: #cbd5e1; font-size: 11px; font-weight: 500; letter-spacing: 0; }
     
     .demo-badge { 
       border: 1px solid rgba(255,255,255,0.2); color: white; 
@@ -80,7 +80,7 @@
     
     /* ================= INTRO (DIBUAT LEBIH BERWARNA) ================= */
     .intro {
-      position: relative; overflow: hidden; margin-bottom: 32px; padding: 36px 40px;
+      position: relative; overflow: hidden; margin-bottom: 32px; padding: clamp(24px, 4vw, 36px) clamp(24px, 4vw, 40px);
       border-radius: 24px;
       /* Gradasi Biru agar tampilan lebih hidup */
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
@@ -100,11 +100,16 @@
       display: inline-block;
       margin-bottom: 12px; 
     }
-    .intro h1 { margin: 0 0 10px; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.03em; font-weight: 800; color: white; }
-    .intro p { margin: 0; color: rgba(255,255,255,0.9); font-size: 16px; max-width: 600px; line-height: 1.6; }
+    .intro h1 { margin: 0 0 10px; font-size: clamp(24px, 5vw, 36px); letter-spacing: -0.03em; font-weight: 800; color: white; line-height: 1.2; }
+    .intro p { margin: 0; color: rgba(255,255,255,0.9); font-size: clamp(14px, 2vw, 16px); max-width: 600px; line-height: 1.6; }
 
-    /* ================= LAYOUT ================= */
-    .layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr); gap: 24px; align-items: start; }
+    /* ================= LAYOUT & GRID ================= */
+    .layout { 
+      display: grid; 
+      grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr); 
+      gap: 24px; 
+      align-items: start; 
+    }
     .layout > * { min-width: 0; }
     
     .card { 
@@ -114,28 +119,34 @@
       box-shadow: 0 15px 35px -15px rgba(0,0,0,0.1); 
       border-top: 5px solid var(--primary); /* Aksen warna di atas kartu */
     }
-    .scanner-card { padding: 32px; }
+    .scanner-card { padding: clamp(20px, 3vw, 32px); }
     
-    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-    h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
+    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .card-heading-title h2 { margin: 0; font-size: clamp(20px, 3vw, 22px); font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
     .subheading { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
     .step { flex: 0 0 auto; color: white; background: var(--gold); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; }
 
     /* ================= SCANNER ================= */
     .camera-frame {
       position: relative; display: grid; place-items: center; overflow: hidden;
-      width: 100%; aspect-ratio: 16 / 10; border-radius: 16px;
+      width: 100%; aspect-ratio: 4 / 3; /* Aspect ratio yang lebih aman untuk mobile */
+      border-radius: 16px;
       background: #0f172a; color: white; box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.4);
     }
+    
+    @media (min-width: 768px) {
+        .camera-frame { aspect-ratio: 16 / 10; }
+    }
+
     #camera { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
     .camera-shade { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 22px; background: rgba(15, 23, 42, 0.6); }
     
-    .scan-target { width: min(58%, 240px); aspect-ratio: 1; position: absolute; border: 2px solid rgba(255,255,255,0.9); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,0.3), 0 0 20px rgba(217, 119, 6, 0.4); }
+    .scan-target { width: min(65%, 240px); aspect-ratio: 1; position: absolute; border: 2px solid rgba(255,255,255,0.9); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,0.3), 0 0 20px rgba(217, 119, 6, 0.4); }
     .scan-target:before { content: ""; position: absolute; left: 10%; right: 10%; top: 20%; height: 2px; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: scan 2s linear infinite alternate; }
     @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
 
-    .camera-message { position: relative; z-index: 1; max-width: 310px; margin-top: min(34vw, 220px); text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-    .camera-message strong { display: block; font-size: 16px; }
+    .camera-message { position: relative; z-index: 1; max-width: 90%; margin-top: min(40vw, 220px); text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .camera-message strong { display: block; font-size: clamp(14px, 2.5vw, 16px); }
     .camera-message span { display: block; margin-top: 5px; font-size: 13px; opacity: 0.9; }
     
     .camera-frame.has-camera .camera-shade { background: rgba(15, 23, 42, 0.3); }
@@ -150,14 +161,15 @@
     .scan-status.success { color: var(--green); }
     
     /* ================= FORMS ================= */
-    .manual-form { display: flex; gap: 12px; margin-top: 20px; }
-    .manual-form input { flex: 1; height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; background: #f8fafc; font-size: 14px; font-weight: 500; }
+    .manual-form { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .manual-form input { flex: 1; min-width: 200px; height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; background: #f8fafc; font-size: 14px; font-weight: 500; }
     .manual-form input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
     
     .button { 
       min-height: 50px; border: 0; border-radius: 12px; padding: 0 24px; 
       background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; font-weight: 700; font-size: 14px; 
       box-shadow: 0 8px 20px -6px rgba(30, 58, 138, 0.4); 
+      display: inline-flex; align-items: center; justify-content: center;
     }
     .button:hover:not(:disabled) { background: linear-gradient(135deg, #1d4ed8, #2563eb); transform: translateY(-2px); box-shadow: 0 12px 24px -6px rgba(30, 58, 138, 0.5); }
     .button:active:not(:disabled) { transform: translateY(0); }
@@ -171,28 +183,28 @@
     
     .demo-code { margin-top: 24px; border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #f8fafc; }
     .demo-code summary { color: var(--blue-bright); cursor: pointer; font-size: 13px; font-weight: 700; }
-    .demo-code-content { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
-    .demo-code-content img { width: 100px; height: 100px; flex: 0 0 100px; border: 1px solid var(--line); border-radius: 12px; background: white; padding: 4px; }
-    .demo-code-info { font-size: 13px; color: var(--muted); }
+    .demo-code-content { display: flex; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+    .demo-code-content img { width: 80px; height: 80px; flex: 0 0 80px; border: 1px solid var(--line); border-radius: 12px; background: white; padding: 4px; }
+    .demo-code-info { font-size: 13px; color: var(--muted); flex: 1; min-width: 200px; }
     .demo-code-info strong { display: block; color: var(--ink); margin-bottom: 4px; font-size: 14px; }
     .demo-code-info a { color: var(--blue-bright); font-weight: 700; text-decoration: none; display: inline-block; margin-top: 4px; }
     .scan-again { width: 100%; margin-top: 16px; }
 
     /* ================= SIDEBAR ================= */
-    .side-column { display: grid; gap: 24px; }
-    .voter-card, .info-card { padding: 24px; }
+    .side-column { display: grid; gap: 24px; align-content: start; }
+    .voter-card, .info-card { padding: clamp(20px, 3vw, 24px); }
     
     .voter-row { display: flex; align-items: center; gap: 16px; margin-top: 20px; background: #eff6ff; padding: 16px; border-radius: 16px; border: 1px solid #bfdbfe; }
-    .avatar { width: 48px; height: 48px; display: grid; place-items: center; color: white; background: var(--green); border-radius: 50%; font-size: 18px; font-weight: 800; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); }
+    .avatar { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; color: white; background: var(--green); border-radius: 50%; font-size: 18px; font-weight: 800; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); }
     .voter-name { font-weight: 800; font-size: 15px; color: var(--primary); }
-    .voter-id { color: var(--muted); margin-top: 4px; font-size: 13px; }
+    .voter-id { color: var(--muted); margin-top: 4px; font-size: 13px; word-break: break-all; }
     .empty-voter { color: var(--muted); margin-top: 16px; font-size: 13px; line-height: 1.6; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px dashed var(--line); text-align: center; }
     
-    .notice { display: flex; gap: 16px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; padding: 20px; font-size: 13px; line-height: 1.6; }
+    .notice { display: flex; gap: 16px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; padding: 20px; font-size: 13px; line-height: 1.6; align-items: flex-start; }
     .notice svg { width: 24px; flex: 0 0 24px; color: var(--gold); }
     
     .info-list { display: grid; gap: 16px; margin-top: 20px; }
-    .info-item { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .info-item { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 4px; }
     .info-item:last-child { border: none; padding-bottom: 0; }
     .info-item span:first-child { color: var(--muted); }
     .info-item strong { text-align: right; font-weight: 800; color: var(--ink); }
@@ -203,27 +215,31 @@
     /* ================= VOTING SCREEN (KIOSK) ================= */
     .ballot-section { margin-top: 0; }
     .voting-screen {
-      position: relative; width: min(840px, 100%); min-height: 650px; margin: 0 auto;
+      position: relative; width: 100%; max-width: 840px; min-height: min(650px, 90vh); margin: 0 auto;
       border: 1px solid var(--line); border-radius: 24px; background: var(--paper);
       box-shadow: 0 25px 50px -12px rgba(30, 58, 138, 0.2); overflow: hidden;
+      display: flex; flex-direction: column;
     }
     
     .voting-screen-header {
-      padding: 24px; color: white; text-align: center;
+      padding: clamp(16px, 3vw, 24px); color: white; text-align: center;
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
     }
-    .voting-screen-header strong { font-size: 18px; letter-spacing: 0.05em; font-weight: 800; display: block; }
+    .voting-screen-header strong { font-size: clamp(16px, 3vw, 18px); letter-spacing: 0.05em; font-weight: 800; display: block; line-height: 1.3; }
     .voting-screen-header span { margin-top: 6px; color: rgba(255,255,255,0.9); font-size: 13px; display: block; }
     
-    .voting-content { width: min(100% - 40px, 600px); margin: 32px auto 40px; text-align: center; }
-    .voting-content h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: var(--ink); }
+    .voting-content { width: 100%; max-width: 600px; margin: 0 auto; padding: clamp(20px, 4vw, 32px) 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .voting-content h2 { font-size: clamp(20px, 4vw, 24px); font-weight: 800; margin-bottom: 8px; color: var(--ink); }
     
-    .candidate-grid { display: flex; justify-content: center; gap: 32px; margin-top: 40px; flex-wrap: wrap; }
+    .candidate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: clamp(16px, 4vw, 32px); margin-top: clamp(24px, 5vw, 40px); margin-bottom: clamp(24px, 5vw, 40px); }
+    
     .candidate {
-      position: relative; width: 220px; display: flex; flex-direction: column; align-items: center;
-      padding: 32px 20px 24px; color: var(--ink); background: var(--paper);
+      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: clamp(24px, 4vw, 32px) 16px 20px; color: var(--ink); background: var(--paper);
       border: 2px solid var(--line); border-radius: 20px; 
       box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); transition: all 0.3s;
+      cursor: pointer;
+      min-height: 250px;
     }
     .candidate:hover { border-color: #cbd5e1; transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
     
@@ -241,15 +257,15 @@
     }
     
     .candidate-photo { 
-      width: 140px; height: 180px; display: grid; place-items: center; overflow: hidden; 
-      border-radius: 12px; background: #f1f5f9; border: 1px solid var(--line);
+      width: 100%; max-width: 150px; aspect-ratio: 3/4; display: grid; place-items: center; overflow: hidden; 
+      border-radius: 12px; background: #f1f5f9; border: 1px solid var(--line); margin: 0 auto;
     }
     .candidate-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .candidate-photo svg { width: 80px; height: 80px; color: #94a3b8; }
-    .candidate-name { display: block; margin-top: 20px; font-weight: 800; font-size: 15px; line-height: 1.4; }
+    .candidate-photo svg { width: 60%; height: 60%; color: #94a3b8; }
+    .candidate-name { display: block; margin-top: 20px; font-weight: 800; font-size: clamp(14px, 3vw, 15px); line-height: 1.4; word-break: break-word; }
     
-    .ballot-actions { display: flex; justify-content: center; gap: 16px; margin-top: 40px; }
-    .ballot-actions .button { width: min(100%, 300px); min-height: 56px; border-radius: 16px; font-size: 15px; }
+    .ballot-actions { display: flex; justify-content: center; gap: 16px; margin-top: auto; }
+    .ballot-actions .button { width: 100%; max-width: 300px; min-height: 56px; border-radius: 16px; font-size: 15px; }
 
     /* Tombol Biru Terang untuk Lanjutkan */
     #confirm-vote { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
@@ -258,16 +274,16 @@
     
     /* ================= CONFIRMATION ================= */
     .confirmation-card { 
-      width: min(100%, 360px); margin: 32px auto 0; padding: 32px; 
+      width: 100%; max-width: 360px; margin: 32px auto 0; padding: clamp(20px, 4vw, 32px); 
       border: 1px solid var(--line); border-radius: 24px; background: #f8fafc; 
     }
     .confirmation-photo { display: flex; justify-content: center; }
-    .confirmation-photo .candidate-photo { border: 4px solid var(--gold); box-shadow: 0 15px 25px -5px rgba(217, 119, 6, 0.2); }
-    .confirmation-name { display: block; margin-top: 24px; font-size: 22px; font-weight: 800; }
+    .confirmation-photo .candidate-photo { max-width: 130px; border: 4px solid var(--gold); box-shadow: 0 15px 25px -5px rgba(217, 119, 6, 0.2); }
+    .confirmation-name { display: block; margin-top: 24px; font-size: clamp(18px, 4vw, 22px); font-weight: 800; word-break: break-word; }
     .confirmation-number { display: block; margin-top: 4px; font-size: 15px; color: var(--muted); }
     
-    .confirmation-actions { gap: 16px; margin-top: 24px; }
-    .confirmation-actions .button { width: 100%; min-height: 50px; font-size: 15px; }
+    .confirmation-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap;}
+    .confirmation-actions .button { flex: 1; min-width: 120px; min-height: 50px; font-size: 15px; }
     
     /* Tombol Merah Ulangi */
     #retry-selection { 
@@ -292,7 +308,7 @@
       padding: 24px; background: rgba(15,23,42,0.7); backdrop-filter: blur(8px); 
     }
     .success-card { 
-      width: min(400px, 100%); padding: 48px 40px; border-radius: 32px; 
+      width: min(400px, 100%); padding: clamp(32px, 5vw, 48px) clamp(24px, 4vw, 40px); border-radius: 32px; 
       background: var(--paper); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
       text-align: center; animation: popInCard 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
     }
@@ -318,7 +334,7 @@
     .success-icon svg { width: 48px; height: 48px; stroke-width: 3.5; }
     .success-icon svg polyline { stroke-dasharray: 50; stroke-dashoffset: 50; animation: drawCheck 0.6s ease-out forwards 0.4s; }
     @keyframes drawCheck { to { stroke-dashoffset: 0; } }
-    .success-card h2 { margin: 0 0 12px; font-size: 28px; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.3s; }
+    .success-card h2 { margin: 0 0 12px; font-size: clamp(24px, 4vw, 28px); opacity: 0; animation: fadeUpText 0.5s ease forwards 0.3s; }
     .success-card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.4s; }
     @keyframes fadeUpText {
       0% { opacity: 0; transform: translateY(15px); }
@@ -326,13 +342,13 @@
     }
 
     /* ================= RESULTS ================= */
-    .results-section { padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); text-align: left; }
+    .results-section { padding: clamp(20px, 4vw, 32px); border: 1px solid var(--line); border-radius: 24px; background: var(--paper); text-align: left; }
     .voting-results-title { text-align: center; margin-bottom: 8px; color: var(--primary); font-weight: 800; }
     .voting-results-summary { color: var(--muted); text-align: center; font-size: 14px; margin-bottom: 32px; }
     
-    .result-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: #f8fafc; padding: 16px 24px; border-radius: 16px; border: 1px solid var(--line); }
-    .result-label { width: 100px; font-size: 14px; font-weight: 800; color: var(--ink); }
-    .result-track { height: 16px; flex: 1; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+    .result-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: #f8fafc; padding: 16px 24px; border-radius: 16px; border: 1px solid var(--line); flex-wrap: wrap;}
+    .result-label { width: 100px; font-size: 14px; font-weight: 800; color: var(--ink); flex: 1; min-width: 120px;}
+    .result-track { height: 16px; flex: 1; min-width: 150px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
     .result-bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3b82f6, #1e3a8a); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
     .result-count { width: 80px; text-align: right; color: var(--muted); font-size: 14px; font-weight: 700; }
 
@@ -340,23 +356,46 @@
     body.voting-active .topbar, body.voting-active .intro, body.voting-active .layout, body.voting-active .footer { display: none; }
     body.voting-active main { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
+    /* ================= MEDIA QUERIES (RESPONSIVE) ================= */
+    
+    /* Tablet & Medium Screens */
+    @media (max-width: 1024px) {
+        .layout { grid-template-columns: 1fr; gap: 32px; }
+        .side-column { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: stretch;}
+    }
+    
+    /* Mobile Screens */
     @media (max-width: 768px) {
-      .topbar { height: 68px; padding: 0 20px; }
-      main { width: min(100% - 32px, 560px); padding-top: 24px; }
-      .intro { padding: 24px; border-radius: 20px; }
-      .intro h1 { font-size: 26px; }
-      .layout { grid-template-columns: 1fr; }
-      .scanner-card, .voter-card, .info-card { padding: 24px; }
+      .topbar { height: 68px; padding: 0 16px; }
+      main { width: 100%; padding: 24px 16px 40px; }
+      
+      .intro { padding: 24px; border-radius: 20px; margin-bottom: 24px; }
+      
+      .side-column { grid-template-columns: 1fr; }
+      
       .voting-screen { min-height: calc(100vh - 40px); border-radius: 20px; }
-      .voting-content { padding: 0 20px; margin-top: 24px; }
-      .candidate-grid { gap: 20px; }
-      .candidate { width: 46%; padding: 24px 12px 16px; }
-      .candidate-photo { width: 100%; height: clamp(120px, 35vw, 150px); }
-      .ballot-actions { flex-direction: column; }
-      .ballot-actions .button { width: 100%; }
-      .confirmation-actions { flex-direction: column; }
-      .result-row { flex-wrap: wrap; gap: 12px; }
-      .result-track { order: 3; width: 100%; flex: none; }
+      
+      .candidate-grid { gap: 16px; }
+      
+      /* Ubah layout form verifikasi di mobile agar tombol penuh */
+      .manual-form { flex-direction: column; }
+      .manual-form input { width: 100%; }
+      .manual-form .button { width: 100%; }
+      
+      /* Ubah layout tombol konfirmasi di mobile */
+      .confirmation-actions { flex-direction: column-reverse; } /* Tombol Sah di atas, Ulangi di bawah */
+      .confirmation-actions .button { width: 100%; }
+      
+      .result-row { gap: 12px; padding: 16px; }
+      .result-label { width: 100%; flex: none; margin-bottom: 4px;}
+      .result-track { order: 3; width: 100%; flex: none; margin-top: 8px;}
+      .result-count { width: auto; flex: 1; text-align: left;}
+    }
+    
+    /* Sangat Kecil (Small Mobile) */
+    @media (max-width: 400px) {
+        .candidate-grid { grid-template-columns: 1fr; } /* Satu kolom kandidat untuk layar sangat sempit */
+        .candidate { width: 100%; max-width: 280px; margin: 0 auto; }
     }
   </style>
 </head>
@@ -383,7 +422,7 @@
     <div class="layout">
       <section class="card scanner-card" aria-labelledby="scan-title">
         <div class="card-heading">
-          <div>
+          <div class="card-heading-title">
             <h2 id="scan-title">Verifikasi Pemilih</h2>
             <p class="subheading">Arahkan QR atau barcode ke dalam bingkai kamera.</p>
           </div>
@@ -412,7 +451,7 @@
         <details class="demo-code" open>
           <summary>Tiket Demo (Bisa dipakai berulang)</summary>
           <div class="demo-code-content">
-            <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-001" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23e2e8f0\'/></svg>'">
+            <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-01" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23e2e8f0\'/></svg>'">
             <div class="demo-code-info">
               <strong>ID: DEMO-MARGAHAYU-01</strong>
               <p>Scan QR ini atau ketik manual untuk mencoba simulasi.</p>
@@ -486,9 +525,9 @@
             <strong class="confirmation-name" id="confirmation-name"></strong>
             <span class="confirmation-number" id="confirmation-number"></span>
           </div>
-          <div class="ballot-actions confirmation-actions" style="display: flex; gap: 16px;">
+          <div class="ballot-actions confirmation-actions">
             <button class="button" id="retry-selection" type="button">ULANGI</button>
-            <button class="button" id="submit-vote" type="button">PILIH</button>
+            <button class="button" id="submit-vote" type="button">SAH! PILIH</button>
           </div>
         </section>
 
