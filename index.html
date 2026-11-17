@@ -1,1038 +1,999 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1e3a8a">
-  <title>Simulasi Pilkades Margahayu</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Simulasi Pilkades Margahayu</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-    :root {
-      color-scheme: light;
-      --ink: #0f172a;
-      --muted: #475569;
-      --green: #16a34a;
-      --green-dark: #15803d;
-      --mint: #f0fdf4;
-      --line: #e2e8f0;
-      --paper: #ffffff;
-      --background: #f1f5f9;
-      --amber: #b45309;
-      --gold: #d97706;
-      --gold-light: #fef3c7;
-      
-      /* Premium Theme Colors */
-      --primary: #1e3a8a;       /* Deep Navy */
-      --primary-hover: #1e40af;
-      --primary-light: #eff6ff;
-      --blue-bright: #2563eb;
-      font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-    }
+    :root {
+      color-scheme: light;
+      --ink: #0f172a;
+      --muted: #475569;
+      --green: #16a34a;
+      --green-dark: #15803d;
+      --mint: #f0fdf4;
+      --line: #e2e8f0;
+      --paper: #ffffff;
+      --background: #f1f5f9;
+      --amber: #b45309;
+      --gold: #d97706;
+      --gold-light: #fef3c7;
+      
+      /* Premium Theme Colors */
+      --primary: #1e3a8a;       /* Deep Navy */
+      --primary-hover: #1e40af;
+      --primary-light: #eff6ff;
+      --blue-bright: #2563eb;
+      font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      min-width: 320px;
-      min-height: 100vh;
-      /* Latar belakang sedikit bergradasi agar tidak terlalu polos */
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      color: var(--ink);
-      line-height: 1.5;
-    }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      /* Latar belakang sedikit bergradasi agar tidak terlalu polos */
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
 
-    button, input { font: inherit; outline: none; }
-    button { cursor: pointer; transition: all 0.2s; }
+    button, input { font: inherit; outline: none; }
+    button { cursor: pointer; transition: all 0.2s; }
 
-    /* ================= HEADER ================= */
-    .topbar {
-      height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 max(24px, calc((100vw - 1120px) / 2));
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-      border-bottom: 4px solid var(--gold);
-      box-shadow: 0 10px 30px -10px rgba(30, 58, 138, 0.4);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    /* ================= HEADER ================= */
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(24px, calc((100vw - 1120px) / 2));
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      border-bottom: 4px solid var(--gold);
+      box-shadow: 0 10px 30px -10px rgba(30, 58, 138, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-    .brand { display: flex; align-items: center; gap: 14px; color: white; font-weight: 700; font-size: clamp(16px, 2vw, 18px); letter-spacing: -0.02em; }
-    .brand-mark {
-      width: clamp(36px, 4vw, 42px); height: clamp(36px, 4vw, 42px); display: grid; place-items: center;
-      border: none; border-radius: 12px; color: white;
-      background: linear-gradient(135deg, #fcd34d, #d97706);
-      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-    }
-    .brand-mark svg { width: 22px; height: 22px; stroke-width: 2.5; }
-    .brand small { display: block; margin-top: 2px; color: #cbd5e1; font-size: 11px; font-weight: 500; letter-spacing: 0; }
-    
-    .demo-badge { 
-      border: 1px solid rgba(255,255,255,0.2); color: white; 
-      background: rgba(255,255,255,0.1); border-radius: 20px; 
-      padding: 6px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; backdrop-filter: blur(4px);
-    }
+    .brand { display: flex; align-items: center; gap: 14px; color: white; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+    .brand-mark {
+      width: 42px; height: 42px; display: grid; place-items: center;
+      border: none; border-radius: 12px; color: white;
+      background: linear-gradient(135deg, #fcd34d, #d97706);
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+    .brand-mark svg { width: 22px; height: 22px; stroke-width: 2.5; }
+    .brand small { display: block; margin-top: 2px; color: #cbd5e1; font-size: 12px; font-weight: 500; letter-spacing: 0; }
+    
+    .demo-badge { 
+      border: 1px solid rgba(255,255,255,0.2); color: white; 
+      background: rgba(255,255,255,0.1); border-radius: 20px; 
+      padding: 6px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; backdrop-filter: blur(4px);
+    }
 
-    main { width: min(100% - 40px, 1100px); margin: 0 auto; padding: 46px 0 64px; }
-    
-    /* ================= INTRO (DIBUAT LEBIH BERWARNA) ================= */
-    .intro {
-      position: relative; overflow: hidden; margin-bottom: 32px; padding: clamp(24px, 4vw, 36px) clamp(24px, 4vw, 40px);
-      border-radius: 24px;
-      /* Gradasi Biru agar tampilan lebih hidup */
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-      color: white;
-      box-shadow: 0 20px 40px -15px rgba(30, 58, 138, 0.5);
-      border: none;
-    }
-    .eyebrow { 
-      color: #fcd34d; 
-      background: rgba(255,255,255,0.15);
-      padding: 6px 14px;
-      border-radius: 20px;
-      text-transform: uppercase; 
-      letter-spacing: 0.1em; 
-      font-size: 12px; 
-      font-weight: 800; 
-      display: inline-block;
-      margin-bottom: 12px; 
-    }
-    .intro h1 { margin: 0 0 10px; font-size: clamp(24px, 5vw, 36px); letter-spacing: -0.03em; font-weight: 800; color: white; line-height: 1.2; }
-    .intro p { margin: 0; color: rgba(255,255,255,0.9); font-size: clamp(14px, 2vw, 16px); max-width: 600px; line-height: 1.6; }
+    main { width: min(100% - 40px, 1100px); margin: 0 auto; padding: 46px 0 64px; }
+    
+    /* ================= INTRO (DIBUAT LEBIH BERWARNA) ================= */
+    .intro {
+      position: relative; overflow: hidden; margin-bottom: 32px; padding: 36px 40px;
+      border-radius: 24px;
+      /* Gradasi Biru agar tampilan lebih hidup */
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      box-shadow: 0 20px 40px -15px rgba(30, 58, 138, 0.5);
+      border: none;
+    }
+    .eyebrow { 
+      color: #fcd34d; 
+      background: rgba(255,255,255,0.15);
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-transform: uppercase; 
+      letter-spacing: 0.1em; 
+      font-size: 12px; 
+      font-weight: 800; 
+      display: inline-block;
+      margin-bottom: 12px; 
+    }
+    .intro h1 { margin: 0 0 10px; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.03em; font-weight: 800; color: white; }
+    .intro p { margin: 0; color: rgba(255,255,255,0.9); font-size: 16px; max-width: 600px; line-height: 1.6; }
 
-    /* ================= LAYOUT & GRID ================= */
-    .layout { 
-      display: grid; 
-      grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr); 
-      gap: 24px; 
-      align-items: start; 
-    }
-    .layout > * { min-width: 0; }
-    
-    .card { 
-      border: 1px solid var(--line); 
-      border-radius: 24px; 
-      background: var(--paper); 
-      box-shadow: 0 15px 35px -15px rgba(0,0,0,0.1); 
-      border-top: 5px solid var(--primary); /* Aksen warna di atas kartu */
-    }
-    .scanner-card { padding: clamp(20px, 3vw, 32px); }
-    
-    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-    .card-heading-title h2 { margin: 0; font-size: clamp(20px, 3vw, 22px); font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
-    .subheading { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
-    .step { flex: 0 0 auto; color: white; background: var(--gold); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; }
+    /* ================= LAYOUT ================= */
+    .layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr); gap: 24px; align-items: start; }
+    .layout > * { min-width: 0; }
+    
+    .card { 
+      border: 1px solid var(--line); 
+      border-radius: 24px; 
+      background: var(--paper); 
+      box-shadow: 0 15px 35px -15px rgba(0,0,0,0.1); 
+      border-top: 5px solid var(--primary); /* Aksen warna di atas kartu */
+    }
+    .scanner-card { padding: 32px; }
+    
+    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+    h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
+    .subheading { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
+    .step { flex: 0 0 auto; color: white; background: var(--gold); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; }
 
-    /* ================= SCANNER ================= */
-    .camera-frame {
-      position: relative; display: grid; place-items: center; overflow: hidden;
-      width: 100%; aspect-ratio: 4 / 3; /* Aspect ratio yang lebih aman untuk mobile */
-      border-radius: 16px;
-      background: #0f172a; color: white; box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.4);
-    }
-    
-    @media (min-width: 768px) {
-        .camera-frame { aspect-ratio: 16 / 10; }
-    }
+    /* ================= SCANNER ================= */
+    .camera-frame {
+      position: relative; display: grid; place-items: center; overflow: hidden;
+      width: 100%; aspect-ratio: 16 / 10; border-radius: 16px;
+      background: #0f172a; color: white; box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.4);
+    }
+    #camera { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+    .camera-shade { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 22px; background: rgba(15, 23, 42, 0.6); }
+    
+    .scan-target { width: min(58%, 240px); aspect-ratio: 1; position: absolute; border: 2px solid rgba(255,255,255,0.9); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,0.3), 0 0 20px rgba(217, 119, 6, 0.4); }
+    .scan-target:before { content: ""; position: absolute; left: 10%; right: 10%; top: 20%; height: 2px; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: scan 2s linear infinite alternate; }
+    @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
 
-    #camera { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
-    .camera-shade { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 22px; background: rgba(15, 23, 42, 0.6); }
-    
-    .scan-target { width: min(65%, 240px); aspect-ratio: 1; position: absolute; border: 2px solid rgba(255,255,255,0.9); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,0.3), 0 0 20px rgba(217, 119, 6, 0.4); }
-    .scan-target:before { content: ""; position: absolute; left: 10%; right: 10%; top: 20%; height: 2px; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: scan 2s linear infinite alternate; }
-    @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
+    .camera-message { position: relative; z-index: 1; max-width: 310px; margin-top: min(34vw, 220px); text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .camera-message strong { display: block; font-size: 16px; }
+    .camera-message span { display: block; margin-top: 5px; font-size: 13px; opacity: 0.9; }
+    
+    .camera-frame.has-camera .camera-shade { background: rgba(15, 23, 42, 0.3); }
+    .camera-frame.no-camera { background: #f8fafc; color: var(--ink); border: 2px dashed #cbd5e1; box-shadow: none; }
+    .camera-frame.no-camera .camera-shade { background: transparent; }
+    .camera-frame.no-camera .scan-target { display: none; }
+    .camera-frame.no-camera .camera-message { align-self: center; margin-top: 0; text-shadow: none; }
+    .camera-frame.no-camera .camera-message span { opacity: 1; color: var(--muted); }
 
-    .camera-message { position: relative; z-index: 1; max-width: 90%; margin-top: min(40vw, 220px); text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-    .camera-message strong { display: block; font-size: clamp(14px, 2.5vw, 16px); }
-    .camera-message span { display: block; margin-top: 5px; font-size: 13px; opacity: 0.9; }
-    
-    .camera-frame.has-camera .camera-shade { background: rgba(15, 23, 42, 0.3); }
-    .camera-frame.no-camera { background: #f8fafc; color: var(--ink); border: 2px dashed #cbd5e1; box-shadow: none; }
-    .camera-frame.no-camera .camera-shade { background: transparent; }
-    .camera-frame.no-camera .scan-target { display: none; }
-    .camera-frame.no-camera .camera-message { align-self: center; margin-top: 0; text-shadow: none; }
-    .camera-frame.no-camera .camera-message span { opacity: 1; color: var(--muted); }
+    .scan-status { min-height: 20px; margin: 16px 0 0; color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; }
+    .scan-status.error { color: #dc2626; }
+    .scan-status.success { color: var(--green); }
+    
+    /* ================= FORMS ================= */
+    .manual-form { display: flex; gap: 12px; margin-top: 20px; }
+    .manual-form input { flex: 1; height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; background: #f8fafc; font-size: 14px; font-weight: 500; }
+    .manual-form input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+    
+    .button { 
+      min-height: 50px; border: 0; border-radius: 12px; padding: 0 24px; 
+      background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; font-weight: 700; font-size: 14px; 
+      box-shadow: 0 8px 20px -6px rgba(30, 58, 138, 0.4); 
+    }
+    .button:hover:not(:disabled) { background: linear-gradient(135deg, #1d4ed8, #2563eb); transform: translateY(-2px); box-shadow: 0 12px 24px -6px rgba(30, 58, 138, 0.5); }
+    .button:active:not(:disabled) { transform: translateY(0); }
+    .button:disabled { background: #cbd5e1; opacity: 1; color: white; cursor: not-allowed; box-shadow: none; transform: none; }
+    
+    .button.secondary { color: var(--primary); background: #eff6ff; border: 1px solid #bfdbfe; box-shadow: none; }
+    .button.secondary:hover { background: #dbeafe; }
 
-    .scan-status { min-height: 20px; margin: 16px 0 0; color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; }
-    .scan-status.error { color: #dc2626; }
-    .scan-status.success { color: var(--green); }
-    
-    /* ================= FORMS ================= */
-    .manual-form { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
-    .manual-form input { flex: 1; min-width: 200px; height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; background: #f8fafc; font-size: 14px; font-weight: 500; }
-    .manual-form input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
-    
-    .button { 
-      min-height: 50px; border: 0; border-radius: 12px; padding: 0 24px; 
-      background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; font-weight: 700; font-size: 14px; 
-      box-shadow: 0 8px 20px -6px rgba(30, 58, 138, 0.4); 
-      display: inline-flex; align-items: center; justify-content: center;
-    }
-    .button:hover:not(:disabled) { background: linear-gradient(135deg, #1d4ed8, #2563eb); transform: translateY(-2px); box-shadow: 0 12px 24px -6px rgba(30, 58, 138, 0.5); }
-    .button:active:not(:disabled) { transform: translateY(0); }
-    .button:disabled { background: #cbd5e1; opacity: 1; color: white; cursor: not-allowed; box-shadow: none; transform: none; }
-    
-    .button.secondary { color: var(--primary); background: #eff6ff; border: 1px solid #bfdbfe; box-shadow: none; }
-    .button.secondary:hover { background: #dbeafe; }
+    .qr-image-button { width: 100%; margin-top: 12px; }
+    .qr-image-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
+    
+    .demo-code { margin-top: 24px; border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #f8fafc; }
+    .demo-code summary { color: var(--blue-bright); cursor: pointer; font-size: 13px; font-weight: 700; }
+    .demo-code-content { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+    .demo-code-content img { width: 100px; height: 100px; flex: 0 0 100px; border: 1px solid var(--line); border-radius: 12px; background: white; padding: 4px; }
+    .demo-code-info { font-size: 13px; color: var(--muted); }
+    .demo-code-info strong { display: block; color: var(--ink); margin-bottom: 4px; font-size: 14px; }
+    .demo-code-info a { color: var(--blue-bright); font-weight: 700; text-decoration: none; display: inline-block; margin-top: 4px; }
+    .scan-again { width: 100%; margin-top: 16px; }
 
-    .qr-image-button { width: 100%; margin-top: 12px; }
-    .qr-image-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
-    
-    .demo-code { margin-top: 24px; border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #f8fafc; }
-    .demo-code summary { color: var(--blue-bright); cursor: pointer; font-size: 13px; font-weight: 700; }
-    .demo-code-content { display: flex; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
-    .demo-code-content img { width: 80px; height: 80px; flex: 0 0 80px; border: 1px solid var(--line); border-radius: 12px; background: white; padding: 4px; }
-    .demo-code-info { font-size: 13px; color: var(--muted); flex: 1; min-width: 200px; }
-    .demo-code-info strong { display: block; color: var(--ink); margin-bottom: 4px; font-size: 14px; }
-    .demo-code-info a { color: var(--blue-bright); font-weight: 700; text-decoration: none; display: inline-block; margin-top: 4px; }
-    .scan-again { width: 100%; margin-top: 16px; }
+    /* ================= SIDEBAR ================= */
+    .side-column { display: grid; gap: 24px; }
+    .voter-card, .info-card { padding: 24px; }
+    
+    .voter-row { display: flex; align-items: center; gap: 16px; margin-top: 20px; background: #eff6ff; padding: 16px; border-radius: 16px; border: 1px solid #bfdbfe; }
+    .avatar { width: 48px; height: 48px; display: grid; place-items: center; color: white; background: var(--green); border-radius: 50%; font-size: 18px; font-weight: 800; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); }
+    .voter-name { font-weight: 800; font-size: 15px; color: var(--primary); }
+    .voter-id { color: var(--muted); margin-top: 4px; font-size: 13px; }
+    .empty-voter { color: var(--muted); margin-top: 16px; font-size: 13px; line-height: 1.6; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px dashed var(--line); text-align: center; }
+    
+    .notice { display: flex; gap: 16px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; padding: 20px; font-size: 13px; line-height: 1.6; }
+    .notice svg { width: 24px; flex: 0 0 24px; color: var(--gold); }
+    
+    .info-list { display: grid; gap: 16px; margin-top: 20px; }
+    .info-item { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .info-item:last-child { border: none; padding-bottom: 0; }
+    .info-item span:first-child { color: var(--muted); }
+    .info-item strong { text-align: right; font-weight: 800; color: var(--ink); }
+    
+    .footer { margin-top: 40px; color: var(--muted); text-align: center; font-size: 12px; font-weight: 600; }
+    .hidden { display: none !important; }
 
-    /* ================= SIDEBAR ================= */
-    .side-column { display: grid; gap: 24px; align-content: start; }
-    .voter-card, .info-card { padding: clamp(20px, 3vw, 24px); }
-    
-    .voter-row { display: flex; align-items: center; gap: 16px; margin-top: 20px; background: #eff6ff; padding: 16px; border-radius: 16px; border: 1px solid #bfdbfe; }
-    .avatar { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; color: white; background: var(--green); border-radius: 50%; font-size: 18px; font-weight: 800; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); }
-    .voter-name { font-weight: 800; font-size: 15px; color: var(--primary); }
-    .voter-id { color: var(--muted); margin-top: 4px; font-size: 13px; word-break: break-all; }
-    .empty-voter { color: var(--muted); margin-top: 16px; font-size: 13px; line-height: 1.6; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px dashed var(--line); text-align: center; }
-    
-    .notice { display: flex; gap: 16px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; padding: 20px; font-size: 13px; line-height: 1.6; align-items: flex-start; }
-    .notice svg { width: 24px; flex: 0 0 24px; color: var(--gold); }
-    
-    .info-list { display: grid; gap: 16px; margin-top: 20px; }
-    .info-item { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 4px; }
-    .info-item:last-child { border: none; padding-bottom: 0; }
-    .info-item span:first-child { color: var(--muted); }
-    .info-item strong { text-align: right; font-weight: 800; color: var(--ink); }
-    
-    .footer { margin-top: 40px; color: var(--muted); text-align: center; font-size: 12px; font-weight: 600; }
-    .hidden { display: none !important; }
+    /* ================= VOTING SCREEN (KIOSK) ================= */
+    .ballot-section { margin-top: 0; }
+    .voting-screen {
+      position: relative; width: min(840px, 100%); min-height: 650px; margin: 0 auto;
+      border: 1px solid var(--line); border-radius: 24px; background: var(--paper);
+      box-shadow: 0 25px 50px -12px rgba(30, 58, 138, 0.2); overflow: hidden;
+    }
+    
+    .voting-screen-header {
+      padding: 24px; color: white; text-align: center;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
+    }
+    .voting-screen-header strong { font-size: 18px; letter-spacing: 0.05em; font-weight: 800; display: block; }
+    .voting-screen-header span { margin-top: 6px; color: rgba(255,255,255,0.9); font-size: 13px; display: block; }
+    
+    .voting-content { width: min(100% - 40px, 600px); margin: 32px auto 40px; text-align: center; }
+    .voting-content h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: var(--ink); }
+    
+    .candidate-grid { display: flex; justify-content: center; gap: 32px; margin-top: 40px; flex-wrap: wrap; }
+    .candidate {
+      position: relative; width: 220px; display: flex; flex-direction: column; align-items: center;
+      padding: 32px 20px 24px; color: var(--ink); background: var(--paper);
+      border: 2px solid var(--line); border-radius: 20px; 
+      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); transition: all 0.3s;
+    }
+    .candidate:hover { border-color: #cbd5e1; transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    
+    /* Efek saat kandidat dipilih */
+    .candidate.selected { 
+      border-color: var(--gold); background: #fffbeb; 
+      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15), 0 20px 25px -5px rgba(217, 119, 6, 0.2); 
+    }
+    
+    .candidate-number { 
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      width: 48px; height: 48px; background: var(--gold); color: white;
+      border-radius: 50%; display: grid; place-items: center; font-size: 20px; font-weight: 800;
+      border: 4px solid var(--paper); box-shadow: 0 4px 10px rgba(217, 119, 6, 0.4);
+    }
+    
+    .candidate-photo { 
+      width: 140px; height: 180px; display: grid; place-items: center; overflow: hidden; 
+      border-radius: 12px; background: #f1f5f9; border: 1px solid var(--line);
+    }
+    .candidate-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .candidate-photo svg { width: 80px; height: 80px; color: #94a3b8; }
+    .candidate-name { display: block; margin-top: 20px; font-weight: 800; font-size: 15px; line-height: 1.4; }
+    
+    .ballot-actions { display: flex; justify-content: center; gap: 16px; margin-top: 40px; }
+    .ballot-actions .button { width: min(100%, 300px); min-height: 56px; border-radius: 16px; font-size: 15px; }
 
-    /* ================= VOTING SCREEN (KIOSK) ================= */
-    .ballot-section { margin-top: 0; }
-    .voting-screen {
-      position: relative; width: 100%; max-width: 840px; min-height: min(650px, 90vh); margin: 0 auto;
-      border: 1px solid var(--line); border-radius: 24px; background: var(--paper);
-      box-shadow: 0 25px 50px -12px rgba(30, 58, 138, 0.2); overflow: hidden;
-      display: flex; flex-direction: column;
-    }
-    
-    .voting-screen-header {
-      padding: clamp(16px, 3vw, 24px); color: white; text-align: center;
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
-    }
-    .voting-screen-header strong { font-size: clamp(16px, 3vw, 18px); letter-spacing: 0.05em; font-weight: 800; display: block; line-height: 1.3; }
-    .voting-screen-header span { margin-top: 6px; color: rgba(255,255,255,0.9); font-size: 13px; display: block; }
-    
-    .voting-content { width: 100%; max-width: 600px; margin: 0 auto; padding: clamp(20px, 4vw, 32px) 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-    .voting-content h2 { font-size: clamp(20px, 4vw, 24px); font-weight: 800; margin-bottom: 8px; color: var(--ink); }
-    
-    .candidate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: clamp(16px, 4vw, 32px); margin-top: clamp(24px, 5vw, 40px); margin-bottom: clamp(24px, 5vw, 40px); }
-    
-    .candidate {
-      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      padding: clamp(24px, 4vw, 32px) 16px 20px; color: var(--ink); background: var(--paper);
-      border: 2px solid var(--line); border-radius: 20px; 
-      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); transition: all 0.3s;
-      cursor: pointer;
-      min-height: 250px;
-    }
-    .candidate:hover { border-color: #cbd5e1; transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-    
-    /* Efek saat kandidat dipilih */
-    .candidate.selected { 
-      border-color: var(--gold); background: #fffbeb; 
-      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15), 0 20px 25px -5px rgba(217, 119, 6, 0.2); 
-    }
-    
-    .candidate-number { 
-      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
-      width: 48px; height: 48px; background: var(--gold); color: white;
-      border-radius: 50%; display: grid; place-items: center; font-size: 20px; font-weight: 800;
-      border: 4px solid var(--paper); box-shadow: 0 4px 10px rgba(217, 119, 6, 0.4);
-    }
-    
-    .candidate-photo { 
-      width: 100%; max-width: 150px; aspect-ratio: 3/4; display: grid; place-items: center; overflow: hidden; 
-      border-radius: 12px; background: #f1f5f9; border: 1px solid var(--line); margin: 0 auto;
-    }
-    .candidate-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .candidate-photo svg { width: 60%; height: 60%; color: #94a3b8; }
-    .candidate-name { display: block; margin-top: 20px; font-weight: 800; font-size: clamp(14px, 3vw, 15px); line-height: 1.4; word-break: break-word; }
-    
-    .ballot-actions { display: flex; justify-content: center; gap: 16px; margin-top: auto; }
-    .ballot-actions .button { width: 100%; max-width: 300px; min-height: 56px; border-radius: 16px; font-size: 15px; }
+    /* Tombol Biru Terang untuk Lanjutkan */
+    #confirm-vote { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    #confirm-vote:hover:not(:disabled) { background: linear-gradient(135deg, #1d4ed8, #1e40af); }
+    #confirm-vote:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; transform: none; }
+    
+    /* ================= CONFIRMATION ================= */
+    .confirmation-card { 
+      width: min(100%, 360px); margin: 32px auto 0; padding: 32px; 
+      border: 1px solid var(--line); border-radius: 24px; background: #f8fafc; 
+    }
+    .confirmation-photo { display: flex; justify-content: center; }
+    .confirmation-photo .candidate-photo { border: 4px solid var(--gold); box-shadow: 0 15px 25px -5px rgba(217, 119, 6, 0.2); }
+    .confirmation-name { display: block; margin-top: 24px; font-size: 22px; font-weight: 800; }
+    .confirmation-number { display: block; margin-top: 4px; font-size: 15px; color: var(--muted); }
+    
+    .confirmation-actions { gap: 16px; margin-top: 24px; }
+    .confirmation-actions .button { width: 100%; min-height: 50px; font-size: 15px; }
+    
+    /* Tombol Merah Ulangi */
+    #retry-selection { 
+      background: #dc2626; color: white; border: none; 
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    #retry-selection:hover { background: #b91c1c; transform: translateY(-2px); }
 
-    /* Tombol Biru Terang untuk Lanjutkan */
-    #confirm-vote { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-    #confirm-vote:hover:not(:disabled) { background: linear-gradient(135deg, #1d4ed8, #1e40af); }
-    #confirm-vote:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; transform: none; }
-    
-    /* ================= CONFIRMATION ================= */
-    .confirmation-card { 
-      width: 100%; max-width: 360px; margin: 32px auto 0; padding: clamp(20px, 4vw, 32px); 
-      border: 1px solid var(--line); border-radius: 24px; background: #f8fafc; 
-    }
-    .confirmation-photo { display: flex; justify-content: center; }
-    .confirmation-photo .candidate-photo { max-width: 130px; border: 4px solid var(--gold); box-shadow: 0 15px 25px -5px rgba(217, 119, 6, 0.2); }
-    .confirmation-name { display: block; margin-top: 24px; font-size: clamp(18px, 4vw, 22px); font-weight: 800; word-break: break-word; }
-    .confirmation-number { display: block; margin-top: 4px; font-size: 15px; color: var(--muted); }
-    
-    .confirmation-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap;}
-    .confirmation-actions .button { flex: 1; min-width: 120px; min-height: 50px; font-size: 15px; }
-    
-    /* Tombol Merah Ulangi */
-    #retry-selection { 
-      background: #dc2626; color: white; border: none; 
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-    #retry-selection:hover { background: #b91c1c; transform: translateY(-2px); }
+    /* Tombol Biru Sah */
+    #submit-vote { 
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none;
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3); 
+    }
+    #submit-vote:hover { 
+      background: linear-gradient(135deg, #2563eb, #1e40af); transform: translateY(-2px); 
+      box-shadow: 0 12px 25px rgba(29, 78, 216, 0.4); 
+    }
 
-    /* Tombol Biru Sah */
-    #submit-vote { 
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none;
-      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3); 
-    }
-    #submit-vote:hover { 
-      background: linear-gradient(135deg, #2563eb, #1e40af); transform: translateY(-2px); 
-      box-shadow: 0 12px 25px rgba(29, 78, 216, 0.4); 
-    }
+    /* ================= SUCCESS OVERLAY ANIMATION ================= */
+    .success-overlay { 
+      position: absolute; z-index: 50; inset: 0; display: grid; place-items: center; 
+      padding: 24px; background: rgba(15,23,42,0.7); backdrop-filter: blur(8px); 
+    }
+    .success-card { 
+      width: min(400px, 100%); padding: 48px 40px; border-radius: 32px; 
+      background: var(--paper); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+      text-align: center; animation: popInCard 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+    }
+    @keyframes popInCard { 
+      0% { transform: scale(0.8) translateY(30px); opacity: 0; } 
+      100% { transform: scale(1) translateY(0); opacity: 1; } 
+    }
+    .success-icon { 
+      width: 90px; height: 90px; display: grid; place-items: center; 
+      margin: 0 auto 24px; border-radius: 50%; background: #16a34a; color: white; 
+      animation: bounceIcon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseRipple 1.5s infinite 0.6s;
+    }
+    @keyframes bounceIcon {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    @keyframes pulseRipple {
+      0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
+      70% { box-shadow: 0 0 0 20px rgba(22, 163, 74, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+    .success-icon svg { width: 48px; height: 48px; stroke-width: 3.5; }
+    .success-icon svg polyline { stroke-dasharray: 50; stroke-dashoffset: 50; animation: drawCheck 0.6s ease-out forwards 0.4s; }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+    .success-card h2 { margin: 0 0 12px; font-size: 28px; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.3s; }
+    .success-card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.4s; }
+    @keyframes fadeUpText {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
 
-    /* ================= SUCCESS OVERLAY ANIMATION ================= */
-    .success-overlay { 
-      position: absolute; z-index: 50; inset: 0; display: grid; place-items: center; 
-      padding: 24px; background: rgba(15,23,42,0.7); backdrop-filter: blur(8px); 
-    }
-    .success-card { 
-      width: min(400px, 100%); padding: clamp(32px, 5vw, 48px) clamp(24px, 4vw, 40px); border-radius: 32px; 
-      background: var(--paper); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-      text-align: center; animation: popInCard 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-    }
-    @keyframes popInCard { 
-      0% { transform: scale(0.8) translateY(30px); opacity: 0; } 
-      100% { transform: scale(1) translateY(0); opacity: 1; } 
-    }
-    .success-icon { 
-      width: 90px; height: 90px; display: grid; place-items: center; 
-      margin: 0 auto 24px; border-radius: 50%; background: #16a34a; color: white; 
-      animation: bounceIcon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseRipple 1.5s infinite 0.6s;
-    }
-    @keyframes bounceIcon {
-      0% { transform: scale(0); }
-      80% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-    @keyframes pulseRipple {
-      0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
-      70% { box-shadow: 0 0 0 20px rgba(22, 163, 74, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
-    }
-    .success-icon svg { width: 48px; height: 48px; stroke-width: 3.5; }
-    .success-icon svg polyline { stroke-dasharray: 50; stroke-dashoffset: 50; animation: drawCheck 0.6s ease-out forwards 0.4s; }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
-    .success-card h2 { margin: 0 0 12px; font-size: clamp(24px, 4vw, 28px); opacity: 0; animation: fadeUpText 0.5s ease forwards 0.3s; }
-    .success-card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.4s; }
-    @keyframes fadeUpText {
-      0% { opacity: 0; transform: translateY(15px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+    /* ================= RESULTS ================= */
+    .results-section { padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); text-align: left; }
+    .voting-results-title { text-align: center; margin-bottom: 8px; color: var(--primary); font-weight: 800; }
+    .voting-results-summary { color: var(--muted); text-align: center; font-size: 14px; margin-bottom: 32px; }
+    
+    .result-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: #f8fafc; padding: 16px 24px; border-radius: 16px; border: 1px solid var(--line); }
+    .result-label { width: 100px; font-size: 14px; font-weight: 800; color: var(--ink); }
+    .result-track { height: 16px; flex: 1; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+    .result-bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3b82f6, #1e3a8a); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    .result-count { width: 80px; text-align: right; color: var(--muted); font-size: 14px; font-weight: 700; }
 
-    /* ================= RESULTS ================= */
-    .results-section { padding: clamp(20px, 4vw, 32px); border: 1px solid var(--line); border-radius: 24px; background: var(--paper); text-align: left; }
-    .voting-results-title { text-align: center; margin-bottom: 8px; color: var(--primary); font-weight: 800; }
-    .voting-results-summary { color: var(--muted); text-align: center; font-size: 14px; margin-bottom: 32px; }
-    
-    .result-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: #f8fafc; padding: 16px 24px; border-radius: 16px; border: 1px solid var(--line); flex-wrap: wrap;}
-    .result-label { width: 100px; font-size: 14px; font-weight: 800; color: var(--ink); flex: 1; min-width: 120px;}
-    .result-track { height: 16px; flex: 1; min-width: 150px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
-    .result-bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3b82f6, #1e3a8a); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-    .result-count { width: 80px; text-align: right; color: var(--muted); font-size: 14px; font-weight: 700; }
+    body.voting-active { background: #cbd5e1; }
+    body.voting-active .topbar, body.voting-active .intro, body.voting-active .layout, body.voting-active .footer { display: none; }
+    body.voting-active main { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
-    body.voting-active { background: #cbd5e1; }
-    body.voting-active .topbar, body.voting-active .intro, body.voting-active .layout, body.voting-active .footer { display: none; }
-    body.voting-active main { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-
-    /* ================= MEDIA QUERIES (RESPONSIVE) ================= */
-    
-    /* Tablet & Medium Screens */
-    @media (max-width: 1024px) {
-        .layout { grid-template-columns: 1fr; gap: 32px; }
-        .side-column { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: stretch;}
-    }
-    
-    /* Mobile Screens */
-    @media (max-width: 768px) {
-      .topbar { height: 68px; padding: 0 16px; }
-      main { width: 100%; padding: 24px 16px 40px; }
-      
-      .intro { padding: 24px; border-radius: 20px; margin-bottom: 24px; }
-      
-      .side-column { grid-template-columns: 1fr; }
-      
-      .voting-screen { min-height: calc(100vh - 40px); border-radius: 20px; }
-      
-      .candidate-grid { gap: 16px; }
-      
-      /* Ubah layout form verifikasi di mobile agar tombol penuh */
-      .manual-form { flex-direction: column; }
-      .manual-form input { width: 100%; }
-      .manual-form .button { width: 100%; }
-      
-      /* Ubah layout tombol konfirmasi di mobile */
-      .confirmation-actions { flex-direction: column-reverse; } /* Tombol Sah di atas, Ulangi di bawah */
-      .confirmation-actions .button { width: 100%; }
-      
-      .result-row { gap: 12px; padding: 16px; }
-      .result-label { width: 100%; flex: none; margin-bottom: 4px;}
-      .result-track { order: 3; width: 100%; flex: none; margin-top: 8px;}
-      .result-count { width: auto; flex: 1; text-align: left;}
-    }
-    
-    /* Sangat Kecil (Small Mobile) */
-    @media (max-width: 400px) {
-        .candidate-grid { grid-template-columns: 1fr; } /* Satu kolom kandidat untuk layar sangat sempit */
-        .candidate { width: 100%; max-width: 280px; margin: 0 auto; }
-    }
-  </style>
+    @media (max-width: 768px) {
+      .topbar { height: 68px; padding: 0 20px; }
+      main { width: min(100% - 32px, 560px); padding-top: 24px; }
+      .intro { padding: 24px; border-radius: 20px; }
+      .intro h1 { font-size: 26px; }
+      .layout { grid-template-columns: 1fr; }
+      .scanner-card, .voter-card, .info-card { padding: 24px; }
+      .voting-screen { min-height: calc(100vh - 40px); border-radius: 20px; }
+      .voting-content { padding: 0 20px; margin-top: 24px; }
+      .candidate-grid { gap: 20px; }
+      .candidate { width: 46%; padding: 24px 12px 16px; }
+      .candidate-photo { width: 100%; height: clamp(120px, 35vw, 150px); }
+      .ballot-actions { flex-direction: column; }
+      .ballot-actions .button { width: 100%; }
+      .confirmation-actions { flex-direction: column; }
+      .result-row { flex-wrap: wrap; gap: 12px; }
+      .result-track { order: 3; width: 100%; flex: none; }
+    }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      </div>
-      <div>Sistem E-Voting<small>Desa Margahayu</small></div>
-    </div>
-    <span class="demo-badge">SIMULASI</span>
-  </header>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div>Sistem E-Voting<small>Desa Margahayu</small></div>
+    </div>
+    <span class="demo-badge">SIMULASI</span>
+  </header>
 
-  <main>
-    <section class="intro">
-      <div class="eyebrow">Pemilihan Kepala Desa 2026</div>
-      <h1>Selamat Datang di TPS Elektronik</h1>
-      <p>Pindai kode QR pada tiket/undangan pemilih Anda untuk memulai simulasi pemungutan suara yang cepat, aman, dan transparan.</p>
-    </section>
+  <main>
+    <section class="intro">
+      <div class="eyebrow">Pemilihan Kepala Desa 2026</div>
+      <h1>Selamat Datang di TPS Elektronik</h1>
+      <p>Pindai kode QR pada tiket/undangan pemilih Anda untuk memulai simulasi pemungutan suara yang cepat, aman, dan transparan.</p>
+    </section>
 
-    <div class="layout">
-      <section class="card scanner-card" aria-labelledby="scan-title">
-        <div class="card-heading">
-          <div class="card-heading-title">
-            <h2 id="scan-title">Verifikasi Pemilih</h2>
-            <p class="subheading">Arahkan QR atau barcode ke dalam bingkai kamera.</p>
-          </div>
-          <span class="step">LANGKAH 01</span>
-        </div>
+    <div class="layout">
+      <section class="card scanner-card" aria-labelledby="scan-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="scan-title">Verifikasi Pemilih</h2>
+            <p class="subheading">Arahkan QR atau barcode ke dalam bingkai kamera.</p>
+          </div>
+          <span class="step">LANGKAH 01</span>
+        </div>
 
-        <div class="camera-frame" id="camera-frame">
-          <video id="camera" autoplay muted playsinline aria-label="Pratinjau kamera untuk pemindaian barcode"></video>
-          <div class="camera-shade">
-            <div class="scan-target" aria-hidden="true"></div>
-            <div class="camera-message">
-              <strong id="camera-title">Menyiapkan kamera...</strong>
-              <span id="camera-copy">Izinkan akses kamera untuk mulai memindai.</span>
-            </div>
-          </div>
-        </div>
-        <p class="scan-status" id="scan-status" role="status" aria-live="polite">Meminta izin kamera...</p>
+        <div class="camera-frame" id="camera-frame">
+          <video id="camera" autoplay muted playsinline aria-label="Pratinjau kamera untuk pemindaian barcode"></video>
+          <div class="camera-shade">
+            <div class="scan-target" aria-hidden="true"></div>
+            <div class="camera-message">
+              <strong id="camera-title">Menyiapkan kamera...</strong>
+              <span id="camera-copy">Izinkan akses kamera untuk mulai memindai.</span>
+            </div>
+          </div>
+        </div>
+        <p class="scan-status" id="scan-status" role="status" aria-live="polite">Meminta izin kamera...</p>
 
-        <form class="manual-form" id="manual-form">
-          <input id="manual-code" type="text" autocomplete="off" placeholder="Atau ketik ID pemilih..." aria-label="Kode pemilih">
-          <button class="button" type="submit">Verifikasi</button>
-        </form>
-        <button class="button secondary qr-image-button" id="scan-image-button" type="button">Unggah QR dari Galeri</button>
-        <input class="hidden" id="qr-image-input" type="file" accept="image/*">
-        
-        <details class="demo-code" open>
-          <summary>Tiket Demo (Bisa dipakai berulang)</summary>
-          <div class="demo-code-content">
-            <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-01" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23e2e8f0\'/></svg>'">
-            <div class="demo-code-info">
-              <strong>ID: DEMO-MARGAHAYU-01</strong>
-              <p>Scan QR ini atau ketik manual untuk mencoba simulasi.</p>
-            </div>
-          </div>
-        </details>
-        <button class="button secondary scan-again hidden" id="scan-again" type="button">Pindai Pemilih Berikutnya</button>
+        <form class="manual-form" id="manual-form">
+          <input id="manual-code" type="text" autocomplete="off" placeholder="Atau ketik ID pemilih..." aria-label="Kode pemilih">
+          <button class="button" type="submit">Verifikasi</button>
+        </form>
+        <button class="button secondary qr-image-button" id="scan-image-button" type="button">Unggah QR dari Galeri</button>
+        <input class="hidden" id="qr-image-input" type="file" accept="image/*">
+        
+        <details class="demo-code" open>
+          <summary>Tiket Demo (Bisa dipakai berulang)</summary>
+          <div class="demo-code-content">
+            <img src="kode-pemilih-demo.png" alt="QR demo dengan kode DEMO-MARGAHAYU-001" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23e2e8f0\'/></svg>'">
+            <div class="demo-code-info">
+              <strong>ID: DEMO-MARGAHAYU-01</strong>
+              <p>Scan QR ini atau ketik manual untuk mencoba simulasi.</p>
+            </div>
+          </div>
+        </details>
+        <button class="button secondary scan-again hidden" id="scan-again" type="button">Pindai Pemilih Berikutnya</button>
 
-      </section>
+      </section>
 
-      <aside class="side-column">
-        <section class="card voter-card" aria-live="polite">
-          <h2>Status Pemilih</h2>
-          <div class="empty-voter" id="empty-voter">Menunggu pindaian tiket...<br>Sistem verifikasi siap digunakan.</div>
-          <div class="voter-row hidden" id="voter-details">
-            <div class="avatar" aria-hidden="true">✓</div>
-            <div><div class="voter-name">Identitas Terverifikasi</div><div class="voter-id" id="voter-id"></div></div>
-          </div>
-        </section>
-        
-        <section class="notice">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span><strong>Informasi:</strong> Ini hanya simulasi. Data pemilih dan hasil suara disimpan lokal di browser Anda.</span>
-        </section>
-        
-        <section class="card info-card">
-          <h2>Informasi TPS</h2>
-          <div class="info-list">
-            <div class="info-item"><span>Wilayah</span><strong>Desa Margahayu</strong></div>
-            <div class="info-item"><span>Kategori</span><strong>Simulasi Pilkades</strong></div>
-            <div class="info-item"><span>Suara Masuk</span><strong id="sidebar-total">0</strong></div>
-          </div>
-        </section>
-      </aside>
-    </div>
+      <aside class="side-column">
+        <section class="card voter-card" aria-live="polite">
+          <h2>Status Pemilih</h2>
+          <div class="empty-voter" id="empty-voter">Menunggu pindaian tiket...<br>Sistem verifikasi siap digunakan.</div>
+          <div class="voter-row hidden" id="voter-details">
+            <div class="avatar" aria-hidden="true">✓</div>
+            <div><div class="voter-name">Identitas Terverifikasi</div><div class="voter-id" id="voter-id"></div></div>
+          </div>
+        </section>
+        
+        <section class="notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><strong>Informasi:</strong> Ini hanya simulasi. Data pemilih dan hasil suara disimpan lokal di browser Anda.</span>
+        </section>
+        
+        <section class="card info-card">
+          <h2>Informasi TPS</h2>
+          <div class="info-list">
+            <div class="info-item"><span>Wilayah</span><strong>Desa Margahayu</strong></div>
+            <div class="info-item"><span>Kategori</span><strong>Simulasi Pilkades</strong></div>
+            <div class="info-item"><span>Suara Masuk</span><strong id="sidebar-total">0</strong></div>
+          </div>
+        </section>
+      </aside>
+    </div>
 
-    <!-- ================= LAYAR PEMILIHAN (KIOSK) ================= -->
-    <section class="voting-screen hidden" id="voting-screen" aria-label="Pemilihan calon kepala desa">
-      <header class="voting-screen-header">
-        <strong>SURAT SUARA ELEKTRONIK (SIMULASI)</strong>
-        <span>Pemilihan Kepala Desa Margahayu - Tahun 2026</span>
-      </header>
-      
-      <div class="success-overlay hidden" id="success-overlay" role="status" aria-live="polite">
-        <div class="success-card">
-          <div class="success-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-          <h2>Suara Sah!</h2>
-          <p>Terima kasih. Pilihan Anda telah berhasil direkam ke dalam sistem.</p>
-        </div>
-      </div>
-      
-      <div class="voting-content">
-        <!-- TAHAP 1: PILIH KANDIDAT -->
-        <section class="ballot-section hidden" id="ballot-section" aria-labelledby="ballot-title">
-          <h2 id="ballot-title">Tentukan Pilihan Anda</h2>
-          <p class="subheading">Ketuk pada kotak kandidat yang ingin Anda pilih.</p>
-          <div class="candidate-grid" id="candidate-grid"></div>
-          <div class="ballot-actions">
-            <button class="button" id="confirm-vote" type="button" disabled>PILIH KANDIDAT INI</button>
-          </div>
-        </section>
+    <!-- ================= LAYAR PEMILIHAN (KIOSK) ================= -->
+    <section class="voting-screen hidden" id="voting-screen" aria-label="Pemilihan calon kepala desa">
+      <header class="voting-screen-header">
+        <strong>SURAT SUARA ELEKTRONIK (SIMULASI)</strong>
+        <span>Pemilihan Kepala Desa Margahayu - Tahun 2026</span>
+      </header>
+      
+      <div class="success-overlay hidden" id="success-overlay" role="status" aria-live="polite">
+        <div class="success-card">
+          <div class="success-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2>Suara Sah!</h2>
+          <p>Terima kasih. Pilihan Anda telah berhasil direkam ke dalam sistem.</p>
+        </div>
+      </div>
+      
+      <div class="voting-content">
+        <!-- TAHAP 1: PILIH KANDIDAT -->
+        <section class="ballot-section hidden" id="ballot-section" aria-labelledby="ballot-title">
+          <h2 id="ballot-title">Tentukan Pilihan Anda</h2>
+          <p class="subheading">Ketuk pada kotak kandidat yang ingin Anda pilih.</p>
+          <div class="candidate-grid" id="candidate-grid"></div>
+          <div class="ballot-actions">
+            <button class="button" id="confirm-vote" type="button" disabled>PILIH KANDIDAT INI</button>
+          </div>
+        </section>
 
-        <!-- TAHAP 2: KONFIRMASI -->
-        <section class="ballot-section confirmation-section hidden" id="confirmation-section" aria-labelledby="confirmation-title">
-          <h2 id="confirmation-title">Konfirmasi Akhir</h2>
-          <p class="subheading">Apakah Anda yakin memilih kandidat ini?</p>
-          <div class="confirmation-card">
-            <div class="confirmation-photo" id="confirmation-photo"></div>
-            <strong class="confirmation-name" id="confirmation-name"></strong>
-            <span class="confirmation-number" id="confirmation-number"></span>
-          </div>
-          <div class="ballot-actions confirmation-actions">
-            <button class="button" id="retry-selection" type="button">ULANGI</button>
-            <button class="button" id="submit-vote" type="button">SAH! PILIH</button>
-          </div>
-        </section>
+        <!-- TAHAP 2: KONFIRMASI -->
+        <section class="ballot-section confirmation-section hidden" id="confirmation-section" aria-labelledby="confirmation-title">
+          <h2 id="confirmation-title">Konfirmasi Akhir</h2>
+          <p class="subheading">Apakah Anda yakin memilih kandidat ini?</p>
+          <div class="confirmation-card">
+            <div class="confirmation-photo" id="confirmation-photo"></div>
+            <strong class="confirmation-name" id="confirmation-name"></strong>
+            <span class="confirmation-number" id="confirmation-number"></span>
+          </div>
+          <div class="ballot-actions confirmation-actions" style="display: flex; gap: 16px;">
+            <button class="button" id="retry-selection" type="button">ULANGI</button>
+            <button class="button" id="submit-vote" type="button">PILIH</button>
+          </div>
+        </section>
 
-        <!-- TAHAP 3: HASIL -->
-        <section class="ballot-section results-section hidden" id="results-section" aria-labelledby="results-title">
-          <h2 class="voting-results-title" id="results-title">Rekapitulasi Sementara</h2>
-          <p class="voting-results-summary">Sistem Informasi Pilkades Margahayu.</p>
-          <div id="results-list"></div>
-          <div style="margin-top:24px; font-weight:800; font-size:16px; text-align:right;" id="total-votes"></div>
-          <div class="ballot-actions" style="margin-top:32px; border-top:1px solid #e2e8f0; padding-top:24px;">
-            <button class="button secondary" id="reset-simulation" type="button" style="width: auto;">Kosongkan Data</button>
-            <button class="button" id="continue-voting" type="button">Lanjut Pemilih Berikutnya</button>
-          </div>
-        </section>
-      </div>
-    </section>
-    
-    <div class="footer">E-Voting Simulation © 2026 - Bukan sistem pemungutan suara resmi.</div>
-  </main>
+        <!-- TAHAP 3: HASIL -->
+        <section class="ballot-section results-section hidden" id="results-section" aria-labelledby="results-title">
+          <h2 class="voting-results-title" id="results-title">Rekapitulasi Sementara</h2>
+          <p class="voting-results-summary">Sistem Informasi Pilkades Margahayu.</p>
+          <div id="results-list"></div>
+          <div style="margin-top:24px; font-weight:800; font-size:16px; text-align:right;" id="total-votes"></div>
+          <div class="ballot-actions" style="margin-top:32px; border-top:1px solid #e2e8f0; padding-top:24px;">
+            <button class="button secondary" id="reset-simulation" type="button" style="width: auto;">Kosongkan Data</button>
+            <button class="button" id="continue-voting" type="button">Lanjut Pemilih Berikutnya</button>
+          </div>
+        </section>
+      </div>
+    </section>
+    
+    <div class="footer">E-Voting Simulation © 2026 - Bukan sistem pemungutan suara resmi.</div>
+  </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script>
-    (function () {
-      "use strict";
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script>
+    (function () {
+      "use strict";
 
-      var STORAGE_KEY = "margahayu-pilkades-simulation-v1";
-      var candidates = [
-        { id: "calon-1", name: "H.MA'IN PERMANA S.P.D", color: "#1e3a8a", photo: "paslon-1.png" },
-        { id: "calon-2", name: "CALON 02", color: "#1e3a8a" }
-      ];
-      var video = document.getElementById("camera");
-      var cameraFrame = document.getElementById("camera-frame");
-      var cameraTitle = document.getElementById("camera-title");
-      var cameraCopy = document.getElementById("camera-copy");
-      var scanStatus = document.getElementById("scan-status");
-      var qrImageInput = document.getElementById("qr-image-input");
-      var ballotSection = document.getElementById("ballot-section");
-      var confirmationSection = document.getElementById("confirmation-section");
-      var resultsSection = document.getElementById("results-section");
-      var votingScreen = document.getElementById("voting-screen");
-      var layout = document.querySelector(".layout");
-      var candidateGrid = document.getElementById("candidate-grid");
-      var confirmButton = document.getElementById("confirm-vote");
-      var confirmationPhoto = document.getElementById("confirmation-photo");
-      var confirmationName = document.getElementById("confirmation-name");
-      var confirmationNumber = document.getElementById("confirmation-number");
-      var successOverlay = document.getElementById("success-overlay");
-      
-      var selectedCandidate = "";
-      var currentVoter = "";
-      var stream = null;
-      var detector = null;
-      var successTimer = null;
-      var scanning = false;
-      var scanCanvas = document.createElement("canvas");
-      var scanContext = scanCanvas.getContext("2d", { willReadFrequently: true });
-      var lastScanAt = 0;
-      var stateWarning = "";
-      var state = loadState();
+      var STORAGE_KEY = "margahayu-pilkades-simulation-v1";
+      var candidates = [
+        { id: "calon-1", name: "H.MA'IN PERMANA S.P.D", color: "#1e3a8a", photo: "paslon-1.png" },
+        { id: "calon-2", name: "CALON 02", color: "#1e3a8a" }
+      ];
+      var video = document.getElementById("camera");
+      var cameraFrame = document.getElementById("camera-frame");
+      var cameraTitle = document.getElementById("camera-title");
+      var cameraCopy = document.getElementById("camera-copy");
+      var scanStatus = document.getElementById("scan-status");
+      var qrImageInput = document.getElementById("qr-image-input");
+      var ballotSection = document.getElementById("ballot-section");
+      var confirmationSection = document.getElementById("confirmation-section");
+      var resultsSection = document.getElementById("results-section");
+      var votingScreen = document.getElementById("voting-screen");
+      var layout = document.querySelector(".layout");
+      var candidateGrid = document.getElementById("candidate-grid");
+      var confirmButton = document.getElementById("confirm-vote");
+      var confirmationPhoto = document.getElementById("confirmation-photo");
+      var confirmationName = document.getElementById("confirmation-name");
+      var confirmationNumber = document.getElementById("confirmation-number");
+      var successOverlay = document.getElementById("success-overlay");
+      
+      var selectedCandidate = "";
+      var currentVoter = "";
+      var stream = null;
+      var detector = null;
+      var successTimer = null;
+      var scanning = false;
+      var scanCanvas = document.createElement("canvas");
+      var scanContext = scanCanvas.getContext("2d", { willReadFrequently: true });
+      var lastScanAt = 0;
+      var stateWarning = "";
+      var state = loadState();
 
-      function emptyState() {
-        return { voters: [], votes: { "calon-1": 0, "calon-2": 0 } };
-      }
+      function emptyState() {
+        return { voters: [], votes: { "calon-1": 0, "calon-2": 0 } };
+      }
 
-      function loadState() {
-        try {
-          var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-          if (!saved || !Array.isArray(saved.voters) || !saved.votes) return emptyState();
-          candidates.forEach(function (candidate) {
-            if (!Number.isFinite(saved.votes[candidate.id]) || saved.votes[candidate.id] < 0) saved.votes[candidate.id] = 0;
-          });
-          return saved;
-        } catch (error) {
-          stateWarning = "Data simulasi tersimpan tidak dapat dibaca. Simulasi dimulai dengan data kosong.";
-          return emptyState();
-        }
-      }
+      function loadState() {
+        try {
+          var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (!saved || !Array.isArray(saved.voters) || !saved.votes) return emptyState();
+          candidates.forEach(function (candidate) {
+            if (!Number.isFinite(saved.votes[candidate.id]) || saved.votes[candidate.id] < 0) saved.votes[candidate.id] = 0;
+          });
+          return saved;
+        } catch (error) {
+          stateWarning = "Data simulasi tersimpan tidak dapat dibaca. Simulasi dimulai dengan data kosong.";
+          return emptyState();
+        }
+      }
 
-      function saveState() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          return true;
-        } catch (error) {
-          setStatus("Penyimpanan lokal tidak tersedia. Hasil mungkin tidak tersimpan setelah halaman ditutup.", "error");
-          return false;
-        }
-      }
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          return true;
+        } catch (error) {
+          setStatus("Penyimpanan lokal tidak tersedia. Hasil mungkin tidak tersimpan setelah halaman ditutup.", "error");
+          return false;
+        }
+      }
 
-      function setStatus(message, type) {
-        scanStatus.textContent = message;
-        scanStatus.className = "scan-status" + (type ? " " + type : "");
-      }
+      function setStatus(message, type) {
+        scanStatus.textContent = message;
+        scanStatus.className = "scan-status" + (type ? " " + type : "");
+      }
 
-      function setCameraMessage(title, copy) {
-        cameraTitle.textContent = title;
-        cameraCopy.textContent = copy;
-      }
+      function setCameraMessage(title, copy) {
+        cameraTitle.textContent = title;
+        cameraCopy.textContent = copy;
+      }
 
-      function stopCamera() {
-        scanning = false;
-        if (stream) {
-          stream.getTracks().forEach(function (track) { track.stop(); });
-          stream = null;
-        }
-        video.srcObject = null;
-        cameraFrame.classList.remove("has-camera");
-      }
+      function stopCamera() {
+        scanning = false;
+        if (stream) {
+          stream.getTracks().forEach(function (track) { track.stop(); });
+          stream = null;
+        }
+        video.srcObject = null;
+        cameraFrame.classList.remove("has-camera");
+      }
 
-      function updateTotals() {
-        var total = candidates.reduce(function (sum, candidate) { return sum + state.votes[candidate.id]; }, 0);
-        document.getElementById("sidebar-total").textContent = String(total);
-        return total;
-      }
+      function updateTotals() {
+        var total = candidates.reduce(function (sum, candidate) { return sum + state.votes[candidate.id]; }, 0);
+        document.getElementById("sidebar-total").textContent = String(total);
+        return total;
+      }
 
-      function showVoter(code) {
-        var normalized = code.trim();
-        if (!normalized) {
-          setStatus("Kode pemilih tidak boleh kosong.", "error");
-          return;
-        }
-        stopCamera();
-        currentVoter = normalized;
-        selectedCandidate = "";
-        
-        document.getElementById("empty-voter").classList.add("hidden");
-        document.getElementById("voter-details").classList.remove("hidden");
-        document.getElementById("voter-id").textContent = "ID: " + normalized;
-        document.getElementById("manual-code").value = "";
-        document.getElementById("manual-form").classList.add("hidden");
-        document.getElementById("scan-again").classList.remove("hidden");
-        
-        document.body.classList.add("voting-active");
-        layout.classList.add("hidden");
-        document.querySelector(".intro").classList.add("hidden");
-        votingScreen.classList.remove("hidden");
-        
-        ballotSection.classList.remove("hidden");
-        confirmationSection.classList.add("hidden");
-        resultsSection.classList.add("hidden");
-        confirmButton.disabled = true;
-        
-        renderCandidates();
-        setCameraMessage("Kode berhasil dipindai", "Silakan pilih satu calon untuk melanjutkan.");
-        cameraFrame.classList.add("no-camera");
-        setStatus("Kode diterima. Silakan tentukan pilihan.", "success");
-        window.scrollTo(0,0);
-      }
+      function showVoter(code) {
+        var normalized = code.trim();
+        if (!normalized) {
+          setStatus("Kode pemilih tidak boleh kosong.", "error");
+          return;
+        }
+        stopCamera();
+        currentVoter = normalized;
+        selectedCandidate = "";
+        
+        document.getElementById("empty-voter").classList.add("hidden");
+        document.getElementById("voter-details").classList.remove("hidden");
+        document.getElementById("voter-id").textContent = "ID: " + normalized;
+        document.getElementById("manual-code").value = "";
+        document.getElementById("manual-form").classList.add("hidden");
+        document.getElementById("scan-again").classList.remove("hidden");
+        
+        document.body.classList.add("voting-active");
+        layout.classList.add("hidden");
+        document.querySelector(".intro").classList.add("hidden");
+        votingScreen.classList.remove("hidden");
+        
+        ballotSection.classList.remove("hidden");
+        confirmationSection.classList.add("hidden");
+        resultsSection.classList.add("hidden");
+        confirmButton.disabled = true;
+        
+        renderCandidates();
+        setCameraMessage("Kode berhasil dipindai", "Silakan pilih satu calon untuk melanjutkan.");
+        cameraFrame.classList.add("no-camera");
+        setStatus("Kode diterima. Silakan tentukan pilihan.", "success");
+        window.scrollTo(0,0);
+      }
 
-      function renderCandidates() {
-        candidateGrid.innerHTML = "";
-        candidates.forEach(function (candidate, index) {
-          var button = document.createElement("button");
-          button.type = "button";
-          button.className = "candidate" + (selectedCandidate === candidate.id ? " selected" : "");
-          button.setAttribute("aria-pressed", selectedCandidate === candidate.id ? "true" : "false");
-          
-          var number = document.createElement("span");
-          number.className = "candidate-number";
-          number.textContent = "0" + (index + 1);
-          
-          var photo = document.createElement("span");
-          photo.className = "candidate-photo";
-          photo.setAttribute("aria-hidden", "true");
-          
-          if (candidate.photo) {
-            var image = document.createElement("img");
-            image.src = candidate.photo;
-            image.alt = "Foto " + candidate.name;
-            image.onerror = function() {
-                this.onerror = null; 
-                this.parentNode.innerHTML = "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
-            };
-            photo.appendChild(image);
-          } else {
-            var portrait = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            portrait.setAttribute("viewBox", "0 0 24 24");
-            portrait.setAttribute("fill", "currentColor");
-            var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z");
-            portrait.appendChild(path);
-            photo.appendChild(portrait);
-          }
-          
-          var name = document.createElement("span");
-          name.className = "candidate-name";
-          name.textContent = candidate.name;
-          
-          button.appendChild(number);
-          button.appendChild(photo);
-          button.appendChild(name);
-          
-          button.addEventListener("click", function () {
-            selectedCandidate = candidate.id;
-            confirmButton.disabled = false;
-            renderCandidates();
-          });
-          
-          candidateGrid.appendChild(button);
-        });
-      }
+      function renderCandidates() {
+        candidateGrid.innerHTML = "";
+        candidates.forEach(function (candidate, index) {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.className = "candidate" + (selectedCandidate === candidate.id ? " selected" : "");
+          button.setAttribute("aria-pressed", selectedCandidate === candidate.id ? "true" : "false");
+          
+          var number = document.createElement("span");
+          number.className = "candidate-number";
+          number.textContent = "0" + (index + 1);
+          
+          var photo = document.createElement("span");
+          photo.className = "candidate-photo";
+          photo.setAttribute("aria-hidden", "true");
+          
+          if (candidate.photo) {
+            var image = document.createElement("img");
+            image.src = candidate.photo;
+            image.alt = "Foto " + candidate.name;
+            image.onerror = function() {
+                this.onerror = null; 
+                this.parentNode.innerHTML = "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+            };
+            photo.appendChild(image);
+          } else {
+            var portrait = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            portrait.setAttribute("viewBox", "0 0 24 24");
+            portrait.setAttribute("fill", "currentColor");
+            var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z");
+            portrait.appendChild(path);
+            photo.appendChild(portrait);
+          }
+          
+          var name = document.createElement("span");
+          name.className = "candidate-name";
+          name.textContent = candidate.name;
+          
+          button.appendChild(number);
+          button.appendChild(photo);
+          button.appendChild(name);
+          
+          button.addEventListener("click", function () {
+            selectedCandidate = candidate.id;
+            confirmButton.disabled = false;
+            renderCandidates();
+          });
+          
+          candidateGrid.appendChild(button);
+        });
+      }
 
-      function renderResults() {
-        var total = updateTotals();
-        var list = document.getElementById("results-list");
-        list.innerHTML = "";
-        candidates.forEach(function (candidate, index) {
-          var count = state.votes[candidate.id];
-          var row = document.createElement("div");
-          row.className = "result-row";
-          
-          var label = document.createElement("span");
-          label.className = "result-label";
-          label.textContent = "0" + (index + 1) + " - " + candidate.name;
-          
-          var track = document.createElement("div");
-          track.className = "result-track";
-          
-          var bar = document.createElement("div");
-          bar.className = "result-bar";
-          setTimeout(function() {
-              bar.style.width = (total ? Math.round(count / total * 100) : 0) + "%";
-          }, 100);
-          track.appendChild(bar);
-          
-          var amount = document.createElement("span");
-          amount.className = "result-count";
-          amount.textContent = count + " suara";
-          
-          row.appendChild(label);
-          row.appendChild(track);
-          row.appendChild(amount);
-          list.appendChild(row);
-        });
-        document.getElementById("total-votes").textContent = "Total suara masuk: " + total;
-        resultsSection.classList.remove("hidden");
-      }
+      function renderResults() {
+        var total = updateTotals();
+        var list = document.getElementById("results-list");
+        list.innerHTML = "";
+        candidates.forEach(function (candidate, index) {
+          var count = state.votes[candidate.id];
+          var row = document.createElement("div");
+          row.className = "result-row";
+          
+          var label = document.createElement("span");
+          label.className = "result-label";
+          label.textContent = "0" + (index + 1) + " - " + candidate.name;
+          
+          var track = document.createElement("div");
+          track.className = "result-track";
+          
+          var bar = document.createElement("div");
+          bar.className = "result-bar";
+          setTimeout(function() {
+              bar.style.width = (total ? Math.round(count / total * 100) : 0) + "%";
+          }, 100);
+          track.appendChild(bar);
+          
+          var amount = document.createElement("span");
+          amount.className = "result-count";
+          amount.textContent = count + " suara";
+          
+          row.appendChild(label);
+          row.appendChild(track);
+          row.appendChild(amount);
+          list.appendChild(row);
+        });
+        document.getElementById("total-votes").textContent = "Total suara masuk: " + total;
+        resultsSection.classList.remove("hidden");
+      }
 
-      function acceptBarcode(value) {
-        if (!scanning) return;
-        showVoter(value);
-      }
+      function acceptBarcode(value) {
+        if (!scanning) return;
+        showVoter(value);
+      }
 
-      function decodeQrImage(source, sourceWidth, sourceHeight, maxSize) {
-        if (typeof window.jsQR !== "function" || !scanContext || !sourceWidth || !sourceHeight) return null;
-        var scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight));
-        var width = Math.max(1, Math.round(sourceWidth * scale));
-        var height = Math.max(1, Math.round(sourceHeight * scale));
-        scanCanvas.width = width;
-        scanCanvas.height = height;
-        scanContext.drawImage(source, 0, 0, width, height);
-        var imageData = scanContext.getImageData(0, 0, width, height);
-        return window.jsQR(imageData.data, width, height, { inversionAttempts: "attemptBoth" });
-      }
+      function decodeQrImage(source, sourceWidth, sourceHeight, maxSize) {
+        if (typeof window.jsQR !== "function" || !scanContext || !sourceWidth || !sourceHeight) return null;
+        var scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight));
+        var width = Math.max(1, Math.round(sourceWidth * scale));
+        var height = Math.max(1, Math.round(sourceHeight * scale));
+        scanCanvas.width = width;
+        scanCanvas.height = height;
+        scanContext.drawImage(source, 0, 0, width, height);
+        var imageData = scanContext.getImageData(0, 0, width, height);
+        return window.jsQR(imageData.data, width, height, { inversionAttempts: "attemptBoth" });
+      }
 
-      function scanQrFromVideo() {
-        var result = decodeQrImage(video, video.videoWidth, video.videoHeight, 960);
-        if (!result || !result.data) return false;
-        acceptBarcode(result.data);
-        return true;
-      }
+      function scanQrFromVideo() {
+        var result = decodeQrImage(video, video.videoWidth, video.videoHeight, 960);
+        if (!result || !result.data) return false;
+        acceptBarcode(result.data);
+        return true;
+      }
 
-      function scanQrFromFile(file) {
-        if (!file) return;
-        if (file.type && file.type.indexOf("image/") !== 0) {
-          setStatus("Pilih file gambar yang berisi QR.", "error");
-          qrImageInput.value = "";
-          return;
-        }
-        var image = new Image();
-        var imageUrl = URL.createObjectURL(file);
-        image.onload = async function () {
-          try {
-            if (detector) {
-              try {
-                var codes = await detector.detect(image);
-                for (var index = 0; index < codes.length; index += 1) {
-                  if (codes[index].rawValue) {
-                    showVoter(codes[index].rawValue);
-                    return;
-                  }
-                }
-              } catch (error) {
-                console.warn("Bawaan gagal, coba alternatif.", error);
-              }
-            }
-            var result = decodeQrImage(image, image.naturalWidth, image.naturalHeight, 1600);
-            if (result && result.data) {
-              showVoter(result.data);
-              return;
-            }
-            setStatus("QR belum terbaca dari foto. Coba gambar yang lebih jelas.", "error");
-          } catch (error) {
-            setStatus("Gambar QR gagal diproses.", "error");
-          } finally {
-            URL.revokeObjectURL(imageUrl);
-            qrImageInput.value = "";
-          }
-        };
-        image.onerror = function () {
-          URL.revokeObjectURL(imageUrl);
-          qrImageInput.value = "";
-          setStatus("Gambar tidak dapat dibuka.", "error");
-        };
-        image.src = imageUrl;
-      }
+      function scanQrFromFile(file) {
+        if (!file) return;
+        if (file.type && file.type.indexOf("image/") !== 0) {
+          setStatus("Pilih file gambar yang berisi QR.", "error");
+          qrImageInput.value = "";
+          return;
+        }
+        var image = new Image();
+        var imageUrl = URL.createObjectURL(file);
+        image.onload = async function () {
+          try {
+            if (detector) {
+              try {
+                var codes = await detector.detect(image);
+                for (var index = 0; index < codes.length; index += 1) {
+                  if (codes[index].rawValue) {
+                    showVoter(codes[index].rawValue);
+                    return;
+                  }
+                }
+              } catch (error) {
+                console.warn("Bawaan gagal, coba alternatif.", error);
+              }
+            }
+            var result = decodeQrImage(image, image.naturalWidth, image.naturalHeight, 1600);
+            if (result && result.data) {
+              showVoter(result.data);
+              return;
+            }
+            setStatus("QR belum terbaca dari foto. Coba gambar yang lebih jelas.", "error");
+          } catch (error) {
+            setStatus("Gambar QR gagal diproses.", "error");
+          } finally {
+            URL.revokeObjectURL(imageUrl);
+            qrImageInput.value = "";
+          }
+        };
+        image.onerror = function () {
+          URL.revokeObjectURL(imageUrl);
+          qrImageInput.value = "";
+          setStatus("Gambar tidak dapat dibuka.", "error");
+        };
+        image.src = imageUrl;
+      }
 
-      function scanFrame() {
-        if (!scanning) return;
-        if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
-          window.requestAnimationFrame(scanFrame);
-          return;
-        }
-        var now = Date.now();
-        if (now - lastScanAt < 180) {
-          window.requestAnimationFrame(scanFrame);
-          return;
-        }
-        lastScanAt = now;
-        
-        function tryQrFallback() {
-          try {
-            if (scanQrFromVideo()) return;
-          } catch (error) {
-            stopCamera();
-            setCameraMessage("Pemindaian otomatis terhenti", "Gunakan input kode manual.");
-            return;
-          }
-          if (scanning) window.requestAnimationFrame(scanFrame);
-        }
-        
-        if (!detector) {
-          tryQrFallback();
-          return;
-        }
-        
-        detector.detect(video).then(function (codes) {
-          if (!scanning) return;
-          for (var index = 0; index < codes.length; index += 1) {
-            if (codes[index].rawValue) {
-              acceptBarcode(codes[index].rawValue);
-              return;
-            }
-          }
-          tryQrFallback();
-        }).catch(function (error) {
-          if (!scanning) return;
-          detector = null;
-          tryQrFallback();
-        });
-      }
+      function scanFrame() {
+        if (!scanning) return;
+        if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+          window.requestAnimationFrame(scanFrame);
+          return;
+        }
+        var now = Date.now();
+        if (now - lastScanAt < 180) {
+          window.requestAnimationFrame(scanFrame);
+          return;
+        }
+        lastScanAt = now;
+        
+        function tryQrFallback() {
+          try {
+            if (scanQrFromVideo()) return;
+          } catch (error) {
+            stopCamera();
+            setCameraMessage("Pemindaian otomatis terhenti", "Gunakan input kode manual.");
+            return;
+          }
+          if (scanning) window.requestAnimationFrame(scanFrame);
+        }
+        
+        if (!detector) {
+          tryQrFallback();
+          return;
+        }
+        
+        detector.detect(video).then(function (codes) {
+          if (!scanning) return;
+          for (var index = 0; index < codes.length; index += 1) {
+            if (codes[index].rawValue) {
+              acceptBarcode(codes[index].rawValue);
+              return;
+            }
+          }
+          tryQrFallback();
+        }).catch(function (error) {
+          if (!scanning) return;
+          detector = null;
+          tryQrFallback();
+        });
+      }
 
-      async function startCamera() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          cameraFrame.classList.add("no-camera");
-          setCameraMessage("Kamera tidak tersedia", "Masukkan kode secara manual.");
-          setStatus("Browser tidak menyediakan akses kamera.", "error");
-          return;
-        }
+      async function startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          cameraFrame.classList.add("no-camera");
+          setCameraMessage("Kamera tidak tersedia", "Masukkan kode secara manual.");
+          setStatus("Browser tidak menyediakan akses kamera.", "error");
+          return;
+        }
 
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
-          });
-          video.srcObject = stream;
-          await video.play();
-          
-          cameraFrame.classList.add("has-camera");
-          detector = null;
-          
-          if ("BarcodeDetector" in window) {
-            try {
-              var supported = await window.BarcodeDetector.getSupportedFormats();
-              var formats = ["qr_code", "code_128", "code_39"];
-              formats = formats.filter(function (format) { return supported.indexOf(format) !== -1; });
-              if (formats.length) detector = new window.BarcodeDetector({ formats: formats });
-            } catch (error) {}
-          }
-          
-          scanning = true;
-          lastScanAt = 0;
-          setCameraMessage("Kamera siap memindai", "Arahkan QR ke bingkai.");
-          setStatus("Kamera aktif.");
-          window.requestAnimationFrame(scanFrame);
-        } catch (error) {
-          stopCamera();
-          cameraFrame.classList.add("no-camera");
-          setCameraMessage("Kamera tidak dapat dibuka", "Periksa izin kamera Anda.");
-          setStatus("Kamera gagal dibuka.", "error");
-        }
-      }
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+          });
+          video.srcObject = stream;
+          await video.play();
+          
+          cameraFrame.classList.add("has-camera");
+          detector = null;
+          
+          if ("BarcodeDetector" in window) {
+            try {
+              var supported = await window.BarcodeDetector.getSupportedFormats();
+              var formats = ["qr_code", "code_128", "code_39"];
+              formats = formats.filter(function (format) { return supported.indexOf(format) !== -1; });
+              if (formats.length) detector = new window.BarcodeDetector({ formats: formats });
+            } catch (error) {}
+          }
+          
+          scanning = true;
+          lastScanAt = 0;
+          setCameraMessage("Kamera siap memindai", "Arahkan QR ke bingkai.");
+          setStatus("Kamera aktif.");
+          window.requestAnimationFrame(scanFrame);
+        } catch (error) {
+          stopCamera();
+          cameraFrame.classList.add("no-camera");
+          setCameraMessage("Kamera tidak dapat dibuka", "Periksa izin kamera Anda.");
+          setStatus("Kamera gagal dibuka.", "error");
+        }
+      }
 
-      document.getElementById("manual-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        showVoter(document.getElementById("manual-code").value);
-      });
+      document.getElementById("manual-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        showVoter(document.getElementById("manual-code").value);
+      });
 
-      document.getElementById("scan-image-button").addEventListener("click", function () { qrImageInput.click(); });
-      qrImageInput.addEventListener("change", function (event) { scanQrFromFile(event.target.files && event.target.files[0]); });
+      document.getElementById("scan-image-button").addEventListener("click", function () { qrImageInput.click(); });
+      qrImageInput.addEventListener("change", function (event) { scanQrFromFile(event.target.files && event.target.files[0]); });
 
-      document.getElementById("scan-again").addEventListener("click", function () {
-        if (successTimer) { clearTimeout(successTimer); successTimer = null; }
-        successOverlay.classList.add("hidden");
-        currentVoter = "";
-        selectedCandidate = "";
-        
-        document.body.classList.remove("voting-active");
-        votingScreen.classList.add("hidden");
-        layout.classList.remove("hidden");
-        document.querySelector(".intro").classList.remove("hidden");
-        
-        ballotSection.classList.add("hidden");
-        confirmationSection.classList.add("hidden");
-        resultsSection.classList.add("hidden");
-        
-        document.getElementById("voter-details").classList.add("hidden");
-        document.getElementById("empty-voter").classList.remove("hidden");
-        document.getElementById("manual-form").classList.remove("hidden");
-        document.getElementById("scan-again").classList.add("hidden");
-        
-        cameraFrame.classList.remove("no-camera");
-        setCameraMessage("Menyiapkan kamera...", "Izinkan akses kamera untuk mulai memindai.");
-        startCamera();
-        window.scrollTo(0,0);
-      });
+      document.getElementById("scan-again").addEventListener("click", function () {
+        if (successTimer) { clearTimeout(successTimer); successTimer = null; }
+        successOverlay.classList.add("hidden");
+        currentVoter = "";
+        selectedCandidate = "";
+        
+        document.body.classList.remove("voting-active");
+        votingScreen.classList.add("hidden");
+        layout.classList.remove("hidden");
+        document.querySelector(".intro").classList.remove("hidden");
+        
+        ballotSection.classList.add("hidden");
+        confirmationSection.classList.add("hidden");
+        resultsSection.classList.add("hidden");
+        
+        document.getElementById("voter-details").classList.add("hidden");
+        document.getElementById("empty-voter").classList.remove("hidden");
+        document.getElementById("manual-form").classList.remove("hidden");
+        document.getElementById("scan-again").classList.add("hidden");
+        
+        cameraFrame.classList.remove("no-camera");
+        setCameraMessage("Menyiapkan kamera...", "Izinkan akses kamera untuk mulai memindai.");
+        startCamera();
+        window.scrollTo(0,0);
+      });
 
-      confirmButton.addEventListener("click", function () {
-        if (!currentVoter || !selectedCandidate) return;
-        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
-        var selectedPhoto = candidateGrid.querySelector(".candidate.selected .candidate-photo");
-        if (!chosen || !selectedPhoto) {
-          setStatus("Pemilih tidak dapat diproses.", "error");
-          return;
-        }
-        
-        confirmationPhoto.innerHTML = "";
-        var photo = selectedPhoto.cloneNode(true);
-        confirmationPhoto.appendChild(photo);
-        
-        confirmationName.textContent = chosen.name;
-        confirmationNumber.textContent = "Calon Nomor Urut 0" + (candidates.indexOf(chosen) + 1);
-        
-        ballotSection.classList.add("hidden");
-        confirmationSection.classList.remove("hidden");
-        window.scrollTo(0,0);
-      });
+      confirmButton.addEventListener("click", function () {
+        if (!currentVoter || !selectedCandidate) return;
+        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
+        var selectedPhoto = candidateGrid.querySelector(".candidate.selected .candidate-photo");
+        if (!chosen || !selectedPhoto) {
+          setStatus("Pemilih tidak dapat diproses.", "error");
+          return;
+        }
+        
+        confirmationPhoto.innerHTML = "";
+        var photo = selectedPhoto.cloneNode(true);
+        confirmationPhoto.appendChild(photo);
+        
+        confirmationName.textContent = chosen.name;
+        confirmationNumber.textContent = "Calon Nomor Urut 0" + (candidates.indexOf(chosen) + 1);
+        
+        ballotSection.classList.add("hidden");
+        confirmationSection.classList.remove("hidden");
+        window.scrollTo(0,0);
+      });
 
-      document.getElementById("retry-selection").addEventListener("click", function () {
-        confirmationSection.classList.add("hidden");
-        ballotSection.classList.remove("hidden");
-        renderCandidates();
-        confirmButton.disabled = !selectedCandidate;
-        window.scrollTo(0,0);
-      });
+      document.getElementById("retry-selection").addEventListener("click", function () {
+        confirmationSection.classList.add("hidden");
+        ballotSection.classList.remove("hidden");
+        renderCandidates();
+        confirmButton.disabled = !selectedCandidate;
+        window.scrollTo(0,0);
+      });
 
-      document.getElementById("submit-vote").addEventListener("click", function () {
-        if (!currentVoter || !selectedCandidate) return;
-        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
-        if (!chosen) {
-          setStatus("Pemilih tidak dapat diproses.", "error");
-          return;
-        }
-        
-        state.votes[selectedCandidate] += 1;
-        var saved = saveState();
-        updateTotals();
-        
-        confirmationSection.classList.add("hidden");
-        document.getElementById("voter-details").classList.add("hidden");
-        document.getElementById("empty-voter").classList.remove("hidden");
-        document.getElementById("empty-voter").textContent = "Suara berhasil dicatat dalam simulasi. Pindai pemilih berikutnya untuk melanjutkan.";
-        document.getElementById("scan-again").classList.remove("hidden");
-        document.getElementById("manual-form").classList.add("hidden");
-        
-        successOverlay.classList.remove("hidden");
-        if (successTimer) window.clearTimeout(successTimer);
-        
-        successTimer = window.setTimeout(function () {
-          successOverlay.classList.add("hidden");
-          renderResults();
-          successTimer = null;
-        }, 3000);
-        
-        if (saved) setStatus("Pilihan berhasil dicatat. Terima kasih.", "success");
-      });
+      document.getElementById("submit-vote").addEventListener("click", function () {
+        if (!currentVoter || !selectedCandidate) return;
+        var chosen = candidates.find(function (candidate) { return candidate.id === selectedCandidate; });
+        if (!chosen) {
+          setStatus("Pemilih tidak dapat diproses.", "error");
+          return;
+        }
+        
+        state.votes[selectedCandidate] += 1;
+        var saved = saveState();
+        updateTotals();
+        
+        confirmationSection.classList.add("hidden");
+        document.getElementById("voter-details").classList.add("hidden");
+        document.getElementById("empty-voter").classList.remove("hidden");
+        document.getElementById("empty-voter").textContent = "Suara berhasil dicatat dalam simulasi. Pindai pemilih berikutnya untuk melanjutkan.";
+        document.getElementById("scan-again").classList.remove("hidden");
+        document.getElementById("manual-form").classList.add("hidden");
+        
+        successOverlay.classList.remove("hidden");
+        if (successTimer) window.clearTimeout(successTimer);
+        
+        successTimer = window.setTimeout(function () {
+          successOverlay.classList.add("hidden");
+          renderResults();
+          successTimer = null;
+        }, 3000);
+        
+        if (saved) setStatus("Pilihan berhasil dicatat. Terima kasih.", "success");
+      });
 
-      document.getElementById("continue-voting").addEventListener("click", function () {
-        resultsSection.classList.add("hidden");
-        document.getElementById("scan-again").click();
-      });
+      document.getElementById("continue-voting").addEventListener("click", function () {
+        resultsSection.classList.add("hidden");
+        document.getElementById("scan-again").click();
+      });
 
-      document.getElementById("reset-simulation").addEventListener("click", function () {
-        if (!window.confirm("Hapus semua pemilih dan hasil simulasi dari browser ini?")) return;
-        state = emptyState();
-        var saved = saveState();
-        updateTotals();
-        resultsSection.classList.add("hidden");
-        document.getElementById("empty-voter").textContent = "Belum ada pemilih yang dipindai. Kamera akan aktif saat halaman dibuka.";
-        if (saved) setStatus("Data simulasi telah direset.", "success");
-      });
+      document.getElementById("reset-simulation").addEventListener("click", function () {
+        if (!window.confirm("Hapus semua pemilih dan hasil simulasi dari browser ini?")) return;
+        state = emptyState();
+        var saved = saveState();
+        updateTotals();
+        resultsSection.classList.add("hidden");
+        document.getElementById("empty-voter").textContent = "Belum ada pemilih yang dipindai. Kamera akan aktif saat halaman dibuka.";
+        if (saved) setStatus("Data simulasi telah direset.", "success");
+      });
 
-      updateTotals();
-      if (stateWarning) setStatus(stateWarning, "error");
-      startCamera();
-    }());
-  </script>
+      updateTotals();
+      if (stateWarning) setStatus(stateWarning, "error");
+      startCamera();
+    }());
+  </script>
 </body>
 </html>
